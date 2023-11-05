@@ -5,6 +5,7 @@ import argparse
 from enum import Enum
 from dataclasses import field
 from random import Random
+from functools import partial
 
 parser = argparse.ArgumentParser(description='Process some integers.')
 parser.add_argument('input_file', type=str, help='The xml file for your character.')
@@ -295,23 +296,42 @@ def make_title_row(char):
     return title_row
 
 def make_useful_info_row(char):
-    useful_info_row = jp.Div(classes="flex w-full p-4 m-4", style="background-color: #f9f9f9;")
-    hp_box = make_box("100px", "1/5", title="Hit Points", content=char.max_hp)
-    init_box = make_box("100px", "1/5", title="Initiative", content=char.initiative)
-    ac_box = make_box("100px", "1/5", title="Armor Class", content=char.ac)
-    resistence_box = make_box("100px", "1/5", title="Resistances", content="")
-    stats_box = make_box("100px", "1/5", title="Useful Info", content="")
-    useful_info_row.add(hp_box, init_box, ac_box, resistence_box, stats_box)
-    return useful_info_row
-
-def toggle_roll_modal(self, msg):
-    self.roll_modal.show = not self.roll_modal.show
-
-def make_abilities_box(upper_container, char, rng):
-    main_div = jp.Div(classes="flex-col w-full p-4 m-4", style="background-color: #f9f9f9;")
+    useful_info_row = jp.Div(classes="flex-col w-full p-4 m-4", style="background-color: #f9f9f9;")
 
     table = jp.Table(classes="min-w-full bg-white border rounded shadow")
-    main_div.add(table)
+    useful_info_row.add(table)
+
+    thead = jp.Thead(classes="bg-gray-300")
+    table.add(thead)
+    header_row = jp.Tr()
+    thead.add(header_row)
+
+    headers = ["Hit Points", "Initiative", "Armor Class", "Resistances", "Useful Info"]
+    for header in headers:
+        th = jp.Th(classes="text-left py-2 px-3", text=header)
+        header_row.add(th)
+
+    # Table body
+    tbody = jp.Tbody()
+    table.add(tbody)
+
+    table_row = jp.Tr()
+    tbody.add(table_row)
+
+    hit_points_data = jp.Td(classes="border-t py-2 px-3", text=char.max_hp)
+    initiative_data = jp.Td(classes="border-t py-2 px-3", text=char.initiative)
+    ac_data = jp.Td(classes="border-t py-2 px-3", text=char.ac)
+    resistance_data = jp.Td(classes="border-t py-2 px-3", text="")
+    info_data = jp.Td(classes="border-t py-2 px-3", text="")
+
+    table_row.add(hit_points_data, initiative_data, ac_data, resistance_data, info_data)
+    return useful_info_row
+
+def make_abilities_box(upper_container, char, rng):
+    ability_row = jp.Div(classes="flex-col w-full p-4 m-4", style="background-color: #f9f9f9;")
+
+    table = jp.Table(classes="min-w-full bg-white border rounded shadow")
+    ability_row.add(table)
 
     thead = jp.Thead(classes="bg-gray-300")
     table.add(thead)
@@ -332,30 +352,106 @@ def make_abilities_box(upper_container, char, rng):
         tbody.add(tr)
         ability_name = jp.Td(classes="border-t py-2 px-3")
         tr.add(ability_name)
-        roll_modal = make_roll_modal(upper_container, get_stat_modifier(char.stats[ability.value]), 20, rng)
-        btn = jp.Button(text=ability.name, classes="bg-blue-500 text-white rounded px-4 py-2", click=toggle_roll_modal)
+        roll_modal = make_roll_modal(upper_container, get_stat_modifier(char.stats[ability.value]), rng)
+        btn = jp.Button(text=ability.name, classes="bg-blue-500 text-white rounded px-4 py-2", click=toggle_roll_modal$(rng=rng, modifier=modifier))
         btn.roll_modal = roll_modal
         ability_name.add(btn)
         score = jp.Td(classes="border-t py-2 px-3", text=str(char.stats[ability.value]))
         tr.add(score)
         modifier = jp.Td(classes="border-t py-2 px-3", text=str(get_stat_modifier(char.stats[ability.value])))
         tr.add(modifier)
-    return main_div
+    return ability_row
 
 def make_attack_box(char):
     main_container = jp.Div(classes="flex-col w-full p-4 m-4", style="background-color: #f9f9f9;")
     return main_container
 
+def make_saves_box(upper_container, char, rng):
+    main_div = jp.Div(classes="flex-col w-full p-4 m-4", style="background-color: #f9f9f9;")
+
+    table = jp.Table(classes="min-w-full bg-white border rounded shadow")
+    main_div.add(table)
+
+    thead = jp.Thead(classes="bg-gray-300")
+    table.add(thead)
+    header_row = jp.Tr()
+    thead.add(header_row)
+
+    headers = ["Saving Throws", "Total"]
+    for header in headers:
+        th = jp.Th(classes="text-left py-2 px-3", text=header)
+        header_row.add(th)
+
+    # Table body
+    tbody = jp.Tbody()
+    table.add(tbody)
+
+    for throw in SavingThrows:
+        tr = jp.Tr()
+        tbody.add(tr)
+        throw_name = jp.Td(classes="border-t py-2 px-3")
+        tr.add(throw_name)
+        roll_modal = make_roll_modal(upper_container, char.saving_throws[throw.value], rng)
+        btn = jp.Button(text=throw.name, classes="bg-blue-500 text-white rounded px-4 py-2", click=toggle_roll_modal$(rng=rng, modifier=char.saving_throws[throw.value]))
+        btn.roll_modal = roll_modal
+        throw_name.add(btn)
+        total = jp.Td(classes="border-t py-2 px-3", text=str(char.saving_throws[throw.value]))
+        tr.add(total)
+    return main_div
+
+def make_lang_box(char):
+    lang_row = jp.Div(classes="flex-col w-full p-4 m-4", style="background-color: #f9f9f9;")
+
+    table = jp.Table(classes="min-w-full bg-white border rounded shadow")
+    lang_row.add(table)
+
+    thead = jp.Thead(classes="bg-gray-300")
+    table.add(thead)
+    header_row = jp.Tr()
+    thead.add(header_row)
+
+    headers = ["Languages"]
+    for header in headers:
+        th = jp.Th(classes="text-left py-2 px-3", text=header)
+        header_row.add(th)
+
+    # Table body
+    tbody = jp.Tbody()
+    table.add(tbody)
+
+    for lang in char.languages:
+        table_row = jp.Tr()
+        tbody.add(table_row)
+        language = jp.Td(classes="border-t py-2 px-3", text=lang)
+        table_row.add(language)
+
+    return lang_row
+
 def make_large_row(upper_container, char, rng):
     main_row = jp.Div(classes="flex w-full p-4 m-4", style="background-color: #f9f9f9;")
+
     abilities_and_attack_column = jp.Div(classes="flex flex-col w-1/3 gap-4")
     abilities_box = make_abilities_box(upper_container, char, rng)
     attack_box = make_attack_box(char)
     abilities_and_attack_column.add(abilities_box, attack_box)
-    main_row.add(abilities_and_attack_column)
+
+    saves_langs_and_proficiencies_col = jp.Div(classes="flex flex-col w-1/3 gap-4")
+    saves_box = make_saves_box(upper_container, char, rng)
+    # proficiencies_box = make_proficiencies_box(char)
+    lang_box = make_lang_box(char)
+    saves_langs_and_proficiencies_col.add(saves_box, lang_box)
+
+    main_row.add(abilities_and_attack_column, saves_langs_and_proficiencies_col)
     return main_row
 
-def make_roll_modal(upper_container, modifier, die, rng):
+def toggle_roll_modal(self, msg, rng, modifier):
+    if not self.roll_modal.show:
+        result = rng.randint(1, 20)
+        self.roll_modal.content.text = "Result: " + str(result) + " + " + str(modifier) + " = " + str(result + modifier)
+    self.roll_modal.show = not self.roll_modal.show
+
+def make_roll_modal(upper_container, modifier, rng):
+    print("here")
     modal_backdrop = jp.Div(classes="fixed w-full h-full top-0 left-0 flex items-center justify-center bg-black bg-opacity-50", show=False)
     upper_container.add(modal_backdrop)
 
@@ -364,12 +460,13 @@ def make_roll_modal(upper_container, modifier, die, rng):
     modal_title = jp.H1(text=f"Roll", classes="text-xl font-bold mb-4")
     modal_content.add(modal_title)
 
-    result = rng.randint(1, die)
+    result = rng.randint(1, 20)
     modal_text = jp.P(text="Result: " + str(result) + " + " + str(modifier) + " = " + str(result + modifier), classes="mb-4")
     modal_content.add(modal_text)
+    modal_backdrop.content = modal_text
 
     # Close button inside the modal
-    close_button = jp.Button(text="Close", classes="bg-red-500 text-white px-4 py-2", click=toggle_roll_modal)
+    close_button = jp.Button(text="Close", classes="bg-red-500 text-white px-4 py-2", click=toggle_roll_modal$(rng=rng, modifier=modifier))
     close_button.roll_modal = modal_backdrop
     modal_content.add(close_button)
 
