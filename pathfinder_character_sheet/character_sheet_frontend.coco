@@ -13,6 +13,24 @@ def make_roll_button(rng, roll_modal, text="", modifier=0, die=20, num_die=1):
     button.roll_modal = roll_modal
     return button
 
+def make_table(headers):
+    table = jp.Table(classes="min-w-full bg-white border rounded shadow")
+
+    table_header = jp.Thead(classes="bg-gray-300")
+    table.add(table_header)
+    header_row = jp.Tr()
+    table_header.add(header_row)
+
+    for header in headers:
+        th = jp.Th(classes="text-left py-2 px-3", text=header)
+        header_row.add(th)
+
+    # Table body
+    table_body = jp.Tbody()
+    table.add(table_body)
+
+    return table, table_body
+
 def make_title_box(height: str, width: str, title: str):
     box_style = f"background-color: #f9f9f9; border: 1px solid #ccc; shadow-lg; padding: 20px; w-{width}; height: {height}; overflow-y: auto rounded"
     box = jp.Div(classes="border border-gray-300 shadow-lg p-4 rounded-md m-4 flex items-center justify-center", style=box_style)
@@ -31,25 +49,8 @@ def make_title_row(char):
 def make_useful_info_row(char):
     useful_info_row = jp.Div(classes="flex-col w-full p-4 m-4", style="background-color: #f9f9f9;")
 
-    table = jp.Table(classes="min-w-full bg-white border rounded shadow")
+    table, table_body = make_table(["Hit Points", "Initiative", "Armor Class", "Resistances", "Useful Info"])
     useful_info_row.add(table)
-
-    thead = jp.Thead(classes="bg-gray-300")
-    table.add(thead)
-    header_row = jp.Tr()
-    thead.add(header_row)
-
-    headers = ["Hit Points", "Initiative", "Armor Class", "Resistances", "Useful Info"]
-    for header in headers:
-        th = jp.Th(classes="text-left py-2 px-3", text=header)
-        header_row.add(th)
-
-    # Table body
-    tbody = jp.Tbody()
-    table.add(tbody)
-
-    table_row = jp.Tr()
-    tbody.add(table_row)
 
     hit_points_data = jp.Td(classes="border-t py-2 px-3", text=char.max_hp)
     initiative_data = jp.Td(classes="border-t py-2 px-3", text=char.initiative)
@@ -57,66 +58,40 @@ def make_useful_info_row(char):
     resistance_data = jp.Td(classes="border-t py-2 px-3", text="")
     info_data = jp.Td(classes="border-t py-2 px-3", text="")
 
+    table_row = jp.Tr()
+    table_body.add(table_row)
     table_row.add(hit_points_data, initiative_data, ac_data, resistance_data, info_data)
     return useful_info_row
 
 def make_abilities_box(upper_container, char, rng):
     ability_row = jp.Div(classes="flex-col w-full p-4 m-4", style="background-color: #f9f9f9;")
 
-    table = jp.Table(classes="min-w-full bg-white border rounded shadow")
+    table, table_body = make_table(["Ability", "Score", "Modifier"])
     ability_row.add(table)
 
-    thead = jp.Thead(classes="bg-gray-300")
-    table.add(thead)
-    header_row = jp.Tr()
-    thead.add(header_row)
-
-    headers = ["Ability", "Score", "Modifier"]
-    for header in headers:
-        th = jp.Th(classes="text-left py-2 px-3", text=header)
-        header_row.add(th)
-
-    # Table body
-    tbody = jp.Tbody()
-    table.add(tbody)
-
     for ability in Stats:
-        tr = jp.Tr()
-        tbody.add(tr)
+        table_row = jp.Tr()
+        table_body.add(table_row)
         ability_name = jp.Td(classes="border-t py-2 px-3")
-        tr.add(ability_name)
+        table_row.add(ability_name)
         roll_modal = make_roll_modal(upper_container, [get_stat_modifier(char.stats[ability.value])], die=20, num_die=1, rng=rng)
         button = make_roll_button(rng, roll_modal, text=ability.name, modifier=[get_stat_modifier(char.stats[ability.value])])
         ability_name.add(button)
         score = jp.Td(classes="border-t py-2 px-3", text=str(char.stats[ability.value]))
-        tr.add(score)
+        table_row.add(score)
         modifier = jp.Td(classes="border-t py-2 px-3", text=str(get_stat_modifier(char.stats[ability.value])))
-        tr.add(modifier)
+        table_row.add(modifier)
     return ability_row
 
 def make_weapons_box(upper_container, char, rng) -> dict[str, ((int; ...); str; str)]:
     weapons_row = jp.Div(classes="flex-col w-full p-4 m-4", style="background-color: #f9f9f9;")
 
-    table = jp.Table(classes="min-w-full bg-white border rounded shadow")
+    table, table_body = make_table(["Weapon", "Attack Bonus", "Damage", "Crit Multiplier"])
     weapons_row.add(table)
-
-    thead = jp.Thead(classes="bg-gray-300")
-    table.add(thead)
-    header_row = jp.Tr()
-    thead.add(header_row)
-
-    headers = ["Weapon", "Attack Bonus", "Damage", "Crit Multiplier"]
-    for header in headers:
-        th = jp.Th(classes="text-left py-2 px-3", text=header)
-        header_row.add(th)
-
-    # Table body
-    tbody = jp.Tbody()
-    table.add(tbody)
 
     for weapon, (attack_bonus, damage, multiplier) in char.weapons.items():
         table_row = jp.Tr()
-        tbody.add(table_row)
+        table_body.add(table_row)
         weapon_name = jp.Td(classes="border-t py-2 px-3")
         table_row.add(weapon_name)
         num_die, die, modifier = "", "", ""
@@ -161,58 +136,30 @@ def make_attack_box(char):
 def make_saves_box(upper_container, char, rng):
     save_row = jp.Div(classes="flex-col w-full p-4 m-4", style="background-color: #f9f9f9;")
 
-    table = jp.Table(classes="min-w-full bg-white border rounded shadow")
+    table, table_body = make_table(["Saving Throws", "Total"])
     save_row.add(table)
 
-    thead = jp.Thead(classes="bg-gray-300")
-    table.add(thead)
-    header_row = jp.Tr()
-    thead.add(header_row)
-
-    headers = ["Saving Throws", "Total"]
-    for header in headers:
-        th = jp.Th(classes="text-left py-2 px-3", text=header)
-        header_row.add(th)
-
-    # Table body
-    tbody = jp.Tbody()
-    table.add(tbody)
-
     for throw in SavingThrows:
-        tr = jp.Tr()
-        tbody.add(tr)
+        table_row = jp.Tr()
+        table_body.add(table_row)
         throw_name = jp.Td(classes="border-t py-2 px-3")
-        tr.add(throw_name)
+        table_row.add(throw_name)
         roll_modal = make_roll_modal(upper_container, [char.saving_throws[throw.value]], die=20, num_die=1, rng=rng)
         button = make_roll_button(rng, roll_modal, text=throw.name, modifier=[char.saving_throws[throw.value]])
         throw_name.add(button)
         total = jp.Td(classes="border-t py-2 px-3", text=str(char.saving_throws[throw.value]))
-        tr.add(total)
+        table_row.add(total)
     return save_row
 
 def make_lang_box(char):
     lang_row = jp.Div(classes="flex-col w-full p-4 m-4", style="background-color: #f9f9f9;")
 
-    table = jp.Table(classes="min-w-full bg-white border rounded shadow")
+    table, table_body = make_table(["Languages"])
     lang_row.add(table)
-
-    thead = jp.Thead(classes="bg-gray-300")
-    table.add(thead)
-    header_row = jp.Tr()
-    thead.add(header_row)
-
-    headers = ["Languages"]
-    for header in headers:
-        th = jp.Th(classes="text-left py-2 px-3", text=header)
-        header_row.add(th)
-
-    # Table body
-    tbody = jp.Tbody()
-    table.add(tbody)
 
     for lang in char.languages:
         table_row = jp.Tr()
-        tbody.add(table_row)
+        table_body.add(table_row)
         language = jp.Td(classes="border-t py-2 px-3", text=lang)
         table_row.add(language)
 
@@ -221,26 +168,12 @@ def make_lang_box(char):
 def make_skills_box(upper_container, char, rng):
     skills_row = jp.Div(classes="flex-col w-full p-4 m-4", style="background-color: #f9f9f9;")
 
-    table = jp.Table(classes="min-w-full bg-white border rounded shadow")
+    table, table_body = make_table(["Skill", "Modifier"])
     skills_row.add(table)
-
-    thead = jp.Thead(classes="bg-gray-300")
-    table.add(thead)
-    header_row = jp.Tr()
-    thead.add(header_row)
-
-    headers = ["Skill", "Modifier"]
-    for header in headers:
-        th = jp.Th(classes="text-left py-2 px-3", text=header)
-        header_row.add(th)
-
-    # Table body
-    tbody = jp.Tbody()
-    table.add(tbody)
 
     for skill, modifier in char.skills.items():
         table_row = jp.Tr()
-        tbody.add(table_row)
+        table_body.add(table_row)
         skill_name = jp.Td(classes="border-t py-2 px-3")
         table_row.add(skill_name)
         roll_modal = make_roll_modal(upper_container, [modifier], die=20, num_die=1, rng=rng)
