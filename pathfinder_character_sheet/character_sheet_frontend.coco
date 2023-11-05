@@ -31,15 +31,33 @@ def make_table(headers):
 
     return table, table_body
 
+def make_cell_style_class():
+    return "border-t py-2 px-3"
+
+def make_button_div():
+    return jp.Td(classes=make_cell_style_class())
+
+def make_cell_div(text):
+    return jp.Td(classes=make_cell_style_class(), text=text)
+
+def make_row_flex_div():
+    return jp.Div(classes="flex w-full p-4 m-4", style="background-color: #f9f9f9;")
+
+def make_col_flex_div():
+    return jp.Div(classes="flex-col w-full p-4 m-4", style="background-color: #f9f9f9;")
+
+def make_one_third_col_div():
+    return jp.Div(classes="flex flex-col w-1/3 gap-4")
+
 def make_title_box(height: str, width: str, title: str):
     box_style = f"background-color: #f9f9f9; border: 1px solid #ccc; shadow-lg; padding: 20px; w-{width}; height: {height}; overflow-y: auto rounded"
     box = jp.Div(classes="border border-gray-300 shadow-lg p-4 rounded-md m-4 flex items-center justify-center", style=box_style)
-    title = jp.H2(classes="font-bold mb-2 text-center", text=title)
+    title = jp.H2(classes="font-bold mb-2 text-center justify-center", text=title)
     box.add(title)
     return box
 
 def make_title_row(char):
-    title_row = jp.Div(classes="flex w-full p-4 m-4", style="background-color: #f9f9f9;")
+    title_row = make_row_flex_div()
     name_box = make_title_box("50px", "1/8", char.name)
     class_box = make_title_box("50px", "1/4", "".join(char.char_classes) + ': ' + ", ".join(char.archetypes))
     level_box = make_title_box("50px", "1/8", "Level " + str(char.level))
@@ -47,16 +65,16 @@ def make_title_row(char):
     return title_row
 
 def make_useful_info_row(char):
-    useful_info_row = jp.Div(classes="flex-col w-full p-4 m-4", style="background-color: #f9f9f9;")
+    useful_info_row = make_col_flex_div()
 
     table, table_body = make_table(["Hit Points", "Initiative", "Armor Class", "Resistances", "Useful Info"])
     useful_info_row.add(table)
 
-    hit_points_data = jp.Td(classes="border-t py-2 px-3", text=char.max_hp)
-    initiative_data = jp.Td(classes="border-t py-2 px-3", text=char.initiative)
-    ac_data = jp.Td(classes="border-t py-2 px-3", text=char.ac)
-    resistance_data = jp.Td(classes="border-t py-2 px-3", text="")
-    info_data = jp.Td(classes="border-t py-2 px-3", text="")
+    hit_points_data = make_cell_div(text=char.max_hp)
+    initiative_data = make_cell_div(text=char.initiative)
+    ac_data = make_cell_div(text=char.ac)
+    resistance_data = make_cell_div(text="")
+    info_data = make_cell_div(text="")
 
     table_row = jp.Tr()
     table_body.add(table_row)
@@ -64,7 +82,7 @@ def make_useful_info_row(char):
     return useful_info_row
 
 def make_abilities_box(upper_container, char, rng):
-    ability_row = jp.Div(classes="flex-col w-full p-4 m-4", style="background-color: #f9f9f9;")
+    ability_row = make_col_flex_div()
 
     table, table_body = make_table(["Ability", "Score", "Modifier"])
     ability_row.add(table)
@@ -72,19 +90,19 @@ def make_abilities_box(upper_container, char, rng):
     for ability in Stats:
         table_row = jp.Tr()
         table_body.add(table_row)
-        ability_name = jp.Td(classes="border-t py-2 px-3")
+        ability_name = make_button_div()
         table_row.add(ability_name)
         roll_modal = make_roll_modal(upper_container, [get_stat_modifier(char.stats[ability.value])], die=20, num_die=1, rng=rng)
         button = make_roll_button(rng, roll_modal, text=ability.name, modifier=[get_stat_modifier(char.stats[ability.value])])
         ability_name.add(button)
-        score = jp.Td(classes="border-t py-2 px-3", text=str(char.stats[ability.value]))
+        score = make_cell_div(text=str(char.stats[ability.value]))
         table_row.add(score)
-        modifier = jp.Td(classes="border-t py-2 px-3", text=str(get_stat_modifier(char.stats[ability.value])))
+        modifier = make_cell_div(text=str(get_stat_modifier(char.stats[ability.value])))
         table_row.add(modifier)
     return ability_row
 
 def make_weapons_box(upper_container, char, rng) -> dict[str, ((int; ...); str; str)]:
-    weapons_row = jp.Div(classes="flex-col w-full p-4 m-4", style="background-color: #f9f9f9;")
+    weapons_row = make_col_flex_div()
 
     table, table_body = make_table(["Weapon", "Attack Bonus", "Damage", "Crit Multiplier"])
     weapons_row.add(table)
@@ -92,7 +110,7 @@ def make_weapons_box(upper_container, char, rng) -> dict[str, ((int; ...); str; 
     for weapon, (attack_bonus, damage, multiplier) in char.weapons.items():
         table_row = jp.Tr()
         table_body.add(table_row)
-        weapon_name = jp.Td(classes="border-t py-2 px-3")
+        weapon_name = make_button_div()
         table_row.add(weapon_name)
         num_die, die, modifier = "", "", ""
         curr_val = ""
@@ -116,25 +134,25 @@ def make_weapons_box(upper_container, char, rng) -> dict[str, ((int; ...); str; 
         attack_roll_modal = make_roll_modal(upper_container, [*attack_bonus], die=20, num_die=1, rng=rng)
         attack_button = make_roll_button(rng, attack_roll_modal, text=weapon, modifier=[*attack_bonus])
         weapon_name.add(attack_button)
-        attack_bonus_cell = jp.Td(classes="border-t py-2 px-3", text="/".join(map(str, attack_bonus)))
+        attack_bonus_cell = make_cell_div(text="/".join(map(str, attack_bonus)))
         table_row.add(attack_bonus_cell)
-        damage_cell = jp.Td(classes="border-t py-2 px-3")
+        damage_cell = make_button_div()
         table_row.add(damage_cell)
         damage_roll_modal = make_roll_modal(upper_container, [int(modifier)], die=int(die), num_die=int(num_die), rng=rng)
         damage_button = make_roll_button(
             rng, damage_roll_modal, text=damage, modifier=[int(modifier)], die=int(die), num_die=int(num_die))
         damage_cell.add(damage_button)
-        multiplier_cell = jp.Td(classes="border-t py-2 px-3", text=multiplier)
+        multiplier_cell = make_cell_div(text=multiplier)
         table_row.add(multiplier_cell)
 
     return weapons_row
 
 def make_attack_box(char):
-    main_container = jp.Div(classes="flex-col w-full p-4 m-4", style="background-color: #f9f9f9;")
+    main_container = make_col_flex_div()
     return main_container
 
 def make_saves_box(upper_container, char, rng):
-    save_row = jp.Div(classes="flex-col w-full p-4 m-4", style="background-color: #f9f9f9;")
+    save_row = make_col_flex_div()
 
     table, table_body = make_table(["Saving Throws", "Total"])
     save_row.add(table)
@@ -142,17 +160,17 @@ def make_saves_box(upper_container, char, rng):
     for throw in SavingThrows:
         table_row = jp.Tr()
         table_body.add(table_row)
-        throw_name = jp.Td(classes="border-t py-2 px-3")
+        throw_name = make_button_div()
         table_row.add(throw_name)
         roll_modal = make_roll_modal(upper_container, [char.saving_throws[throw.value]], die=20, num_die=1, rng=rng)
         button = make_roll_button(rng, roll_modal, text=throw.name, modifier=[char.saving_throws[throw.value]])
         throw_name.add(button)
-        total = jp.Td(classes="border-t py-2 px-3", text=str(char.saving_throws[throw.value]))
+        total = make_cell_div(text=str(char.saving_throws[throw.value]))
         table_row.add(total)
     return save_row
 
 def make_lang_box(char):
-    lang_row = jp.Div(classes="flex-col w-full p-4 m-4", style="background-color: #f9f9f9;")
+    lang_row = make_col_flex_div()
 
     table, table_body = make_table(["Languages"])
     lang_row.add(table)
@@ -160,13 +178,13 @@ def make_lang_box(char):
     for lang in char.languages:
         table_row = jp.Tr()
         table_body.add(table_row)
-        language = jp.Td(classes="border-t py-2 px-3", text=lang)
+        language = make_cell_div(text=lang)
         table_row.add(language)
 
     return lang_row
 
 def make_skills_box(upper_container, char, rng):
-    skills_row = jp.Div(classes="flex-col w-full p-4 m-4", style="background-color: #f9f9f9;")
+    skills_row = make_col_flex_div()
 
     table, table_body = make_table(["Skill", "Modifier"])
     skills_row.add(table)
@@ -174,32 +192,32 @@ def make_skills_box(upper_container, char, rng):
     for skill, modifier in char.skills.items():
         table_row = jp.Tr()
         table_body.add(table_row)
-        skill_name = jp.Td(classes="border-t py-2 px-3")
+        skill_name = make_button_div()
         table_row.add(skill_name)
         roll_modal = make_roll_modal(upper_container, [modifier], die=20, num_die=1, rng=rng)
         button = make_roll_button(rng, roll_modal, text=skill, modifier=[modifier])
         skill_name.add(button)
-        modifier_cell = jp.Td(classes="border-t py-2 px-3", text=modifier)
+        modifier_cell = make_cell_div(text=modifier)
         table_row.add(modifier_cell)
 
     return skills_row
 
 def make_large_row(upper_container, char, rng):
-    main_row = jp.Div(classes="flex w-full p-4 m-4", style="background-color: #f9f9f9;")
+    main_row = make_row_flex_div()
 
-    abilities_attack_and_weapons_column = jp.Div(classes="flex flex-col w-1/3 gap-4")
+    abilities_attack_and_weapons_column = make_one_third_col_div()
     abilities_box = make_abilities_box(upper_container, char, rng)
     weapons_box = make_weapons_box(upper_container, char, rng)
     attack_box = make_attack_box(char)
     abilities_attack_and_weapons_column.add(abilities_box, weapons_box, attack_box)
 
-    saves_langs_and_proficiencies_col = jp.Div(classes="flex flex-col w-1/3 gap-4")
+    saves_langs_and_proficiencies_col = make_one_third_col_div()
     saves_box = make_saves_box(upper_container, char, rng)
     # proficiencies_box = make_proficiencies_box(char)
     lang_box = make_lang_box(char)
     saves_langs_and_proficiencies_col.add(saves_box, lang_box)
 
-    skills_col = jp.Div(classes="flex flex-col w-1/3 gap-4")
+    skills_col = make_one_third_col_div()
     skills_col.add(make_skills_box(upper_container, char, rng))
 
     main_row.add(abilities_attack_and_weapons_column, saves_langs_and_proficiencies_col, skills_col)
@@ -220,8 +238,8 @@ def toggle_roll_modal(self, msg, rng, die, num_die, modifier):
     self.roll_modal.show = not self.roll_modal.show
 
 def make_roll_modal(upper_container, modifier, die, num_die, rng):
-    print("here")
-    modal_backdrop = jp.Div(classes="fixed w-full h-full top-0 left-0 flex items-center justify-center bg-black bg-opacity-50", show=False)
+    modal_backdrop = jp.Div(
+        classes="fixed w-full h-full top-0 left-0 flex items-center justify-center bg-black bg-opacity-50", show=False)
     upper_container.add(modal_backdrop)
 
     modal_content = jp.Div(classes="bg-white rounded shadow-lg w-1/3 p-8 m-4 relative")
