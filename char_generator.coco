@@ -1,0 +1,265 @@
+from enum import Enum
+from dataclasses import dataclass
+from random import Random
+
+class Stats(Enum):
+    STRENGTH = 0
+    DEXTERITY = 1
+    CONSTITUTION = 2
+    INTELLIGENCE = 3
+    WISDOM = 4
+    CHARISMA = 5
+
+
+@dataclass
+class ClassInfo:
+        primary_stats: tuple[Stats, ...] = ()
+        secondary_stats: tuple[Stats, ...] = ()
+        tertiary_stat: Stats | None = None
+        neutral_stats: tuple[Stats, ...] = ()
+        dump_stats: tuple[Stats, ...] = ()
+
+
+@dataclass
+class Wizard(ClassInfo):
+    primary_stats: tuple[Stats, ...] = (Stats.INTELLIGENCE,)
+    secondary_stats: tuple[Stats, ...] = (Stats.DEXTERITY, Stats.CONSTITUTION)
+    tertiary_stat: Stats = Stats.WISDOM
+    dump_stats: tuple[Stats, ...] = (Stats.STRENGTH, Stats.CHARISMA)
+
+@dataclass
+class Cleric(ClassInfo):
+    primary_stats: tuple[Stats, ...] = (Stats.WISDOM,)
+    secondary_stats: tuple[Stats, ...] = (Stats.DEXTERITY, Stats.CONSTITUTION)
+    tertiary_stat: Stats = Stats.CHARISMA
+    neutral_stats: tuple[Stats, ...] = (Stats.STRENGTH, Stats.INTELLIGENCE)
+    dump_stats: tuple[Stats, ...] = ()
+
+@dataclass
+class Fighter(ClassInfo):
+    primary_stats: tuple[Stats, ...] = ()
+    secondary_stats: tuple[Stats, ...] = (Stats.STRENGTH, Stats.DEXTERITY)
+    tertiary_stat: Stats = Stats.CONSTITUTION
+    neutral_stats: tuple[Stats, ...] = (Stats.INTELLIGENCE, Stats.WISDOM)
+    dump_stats: tuple[Stats, ...] = (Stats.CHARISMA,)
+
+@dataclass
+class Sorcerer(ClassInfo):
+    primary_stats: tuple[Stats, ...] = (Stats.CHARISMA,)
+    secondary_stats: tuple[Stats, ...] = (Stats.DEXTERITY, Stats.CONSTITUTION)
+    tertiary_stat: Stats = Stats.INTELLIGENCE
+    dump_stats: tuple[Stats, ...] = (Stats.STRENGTH, Stats.WISDOM, Stats.INTELLIGENCE)
+
+@dataclass
+class Rogue(ClassInfo):
+    primary_stats: tuple[Stats, ...] = (Stats.DEXTERITY,)
+    secondary_stats: tuple[Stats, ...] = (Stats.STRENGTH, Stats.CONSTITUTION)
+    tertiary_stat: Stats = Stats.WISDOM
+    dump_stats: tuple[Stats, ...] = (Stats.CHARISMA, Stats.INTELLIGENCE)
+
+@dataclass
+class Paladin(ClassInfo):
+    primary_stats: tuple[Stats, ...] = ()
+    secondary_stats: tuple[Stats, ...] = (Stats.STRENGTH, Stats.CHARISMA)
+    tertiary_stat: Stats = Stats.CONSTITUTION
+    neutral_stats: tuple[Stats, ...] = (Stats.DEXTERITY,)
+    dump_stats: tuple[Stats, ...] = (Stats.INTELLIGENCE, Stats.WISDOM)
+
+@dataclass
+class Alchemist(ClassInfo):
+    primary_stats: tuple[Stats, ...] = (Stats.INTELLIGENCE,)
+    secondary_stats: tuple[Stats, ...] = (Stats.DEXTERITY,)
+    tertiary_stat: Stats = Stats.CONSTITUTION
+    neutral_stats: tuple[Stats, ...] = (Stats.STRENGTH, Stats.WISDOM)
+    dump_stats: tuple[Stats, ...] = (Stats.CHARISMA,)
+
+
+@dataclass
+class CharStats:
+    strength: int = 10
+    dexterity: int = 10
+    constitution: int = 10
+    intelligence: int = 10
+    wisdom: int = 10
+    charisma: int = 10
+
+    def get_stats_tuple(self):
+        return (self.strength, self.dexterity, self.constitution, self.intelligence, self.wisdom, self.charisma)
+
+def roll_4d6(rng: Random) -> int = (
+    range(4)
+    |> map$(-> rng.randint(1, 6))
+    |> sorted
+    |> .[1:]
+    |> sum
+)  # type: ignore
+
+def cost_to_add(curr_val: int) -> int:
+    # TODO: Surely there is a better formula
+    if curr_val == 9 or curr_val == 10:
+        return 1
+    return abs(curr_val - 9) // 2 + (curr_val < 10)
+
+def get_gained_points(stats):
+    num_points_gained_per_stat = 0
+    for stat in stats:
+        while stat < 10:
+            num_points_gained_per_stat += cost_to_add(stat)
+            stat += 1
+    return num_points_gained_per_stat
+
+def point_buy_from_floor_stats(points: int, floor_stat: int, rng: Random) -> CharStats:
+    stats = [floor_stat] * 6
+    points += get_gained_points(stats)
+    full_stats: set[int] = set()
+    while len(full_stats) < 6:
+        print(stats)
+        stat_to_increase = rng.randint(0, 5)
+        cost = cost_to_add(stats[stat_to_increase])
+        if cost > points:
+            full_stats.add(stat_to_increase)
+            continue
+        print(points)
+        points -= cost
+        print(cost)
+        stats[stat_to_increase] += 1
+    return CharStats(*stats)
+
+
+def point_buy_for_class(points: int, class_info: ClassInfo, floor_stat = 7, max_buy = 18) -> CharStats:
+    stats = [10] * 6
+
+    # Dump relevant stats
+    dump_stats: tuple[Stats, ...] = class_info.dump_stats
+    for stat in dump_stats:
+        stats[stat.value] = floor_stat
+
+    # Determine point count
+    points += get_gained_points(stats)
+
+    # Put max points in primary stats
+    primary_stats = class_info.primary_stats
+    for stat in primary_stats:
+        while stats[stat.value] < max_buy:
+            cost = cost_to_add(stats[stat.value])
+            if cost > points:
+                break
+            points -= cost
+            stats[stat.value] += 1
+
+    # Put points in secondary stats (two at a time, even is good). Inherently preferences Stats earlier in the list.
+    secondary_stats = class_info.secondary_stats
+    points_remain = True
+    maxxed_stats: set[int] = set()
+    while points_remain:
+        if len(maxxed_stats) == len(secondary_stats):
+            break
+
+        for stat in secondary_stats:
+            if len(maxxed_stats) == len(secondary_stats):
+                break
+            cost = cost_to_add(stats[stat.value]) + cost_to_add(stats[stat.value] + 1)
+            if cost > points:
+                points_remain = False
+                break
+            if stats[stat.value] >= max_buy:
+                maxxed_stats.add(stat.value)
+                continue
+            points -= cost
+            stats[stat.value] += 2
+
+    # Put remaining points in tertiary skill
+    tertiary_stat = class_info.tertiary_stat
+    if tertiary_stat:
+        while True:
+            cost = cost_to_add(stats[tertiary_stat.value])
+            if cost > points:
+                break
+            points -= cost
+            stats[tertiary_stat.value] += 1
+
+    return CharStats(*stats)
+
+
+def pathfinder_stats_roll(rng: Random) -> CharStats =
+    CharStats(*(roll_4d6(rng) for _ in range(6)))
+
+def pathfinder_stats_roll_for_class(class_info: ClassInfo, rng: Random) -> CharStats:
+    rolls = sorted([roll_4d6(rng) for _ in range(6)], reverse=True)
+    stats = [None] * 6
+    for stat in class_info.dump_stats:
+        stats[stat.value] = rolls.pop()
+
+    if class_info.tertiary_stat not in class_info.dump_stats and class_info.tertiary_stat not in class_info.secondary_stats:
+        stats[class_info.tertiary_stat.value] = rolls.pop()
+
+    for stat in reversed(class_info.secondary_stats) :: reversed(class_info.primary_stats):
+        stats[stat.value] = rolls.pop()
+
+    return CharStats(*stats)
+
+
+def add_racial_stat_bonuses(stats: tuple[int, ...], racial_bonuses: tuple[int, ...]) = (
+    map((+), stats, racial_bonuses, strict=True) |> tuple
+)
+
+def get_stat_modifier(stat_value):
+    return (stat_value - 10) // 2
+
+@dataclass
+class CharRace:
+    name: str = ''
+    stat_modifiers: tuple[int] = (0, 0, 0, 0, 0, 0)
+
+class HesperianDevil:
+    name: str = 'Hesperian Devil'
+    stat_modifiers: tuple[int] = (2, 0, 0, 4, 2, 4)
+
+@dataclass
+class Character:
+    char_class: ClassInfo = ClassInfo()
+    char_stats: CharStats = CharStats()
+    char_level: int = 1
+    char_race: CharRace = CharRace()
+
+    @property
+    def armor_class(self):
+        return (get_stat_modifier(self.char_stats.dexterity) + 10, get_stat_modifier(self.char_stats.dexterity) + 10, 10)
+
+    def generate_stats(
+        self,
+        optimize: bool = False,
+        point_buy: int = 0,
+        floor_stat: int = 7,
+        max_buy: int = 18,
+        random=True,
+    ) -> None:
+        if point_buy < 0:
+            raise ValueError("Point buy must be greater than or equal to 0.")
+
+        if random:
+            rng = Random()
+        else:
+            rng = Random(1)
+
+        if optimize:
+            if point_buy == 0:
+                self.char_stats = add_racial_stat_bonuses(
+                    pathfinder_stats_roll_for_class(self.char_class, rng).get_stats_tuple(),
+                    self.char_race.stat_modifiers
+                )
+            else:
+                self.char_stats = add_racial_stat_bonuses(
+                    point_buy_for_class(point_buy, self.char_class, floor_stat, max_buy).get_stats_tuple(),
+                    self.char_race.stat_modifiers
+                )
+        elif point_buy > 0:
+            self.char_stats = add_racial_stat_bonuses(
+                point_buy_from_floor_stats(point_buy, floor_stat, rng).get_stats_tuple(),
+                self.char_race.stat_modifiers
+            )
+        else:
+            self.char_stats = add_racial_stat_bonuses(
+                pathfinder_stats_roll(rng).get_stats_tuple(),
+                self.char_race.stat_modifiers
+            )
