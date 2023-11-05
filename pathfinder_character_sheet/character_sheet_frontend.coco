@@ -4,6 +4,15 @@ from random import Random
 import justpy as jp
 from pathfinder_character_sheet.character_sheet_parser import *
 
+def make_roll_button(rng, roll_modal, text="", modifier=0, die=20, num_die=1):
+    button = jp.Button(
+            text=text,
+            classes="bg-blue-500 text-white rounded px-4 py-2",
+            click=toggle_roll_modal$(rng=rng, modifier=modifier, die=die, num_die=num_die)
+        )
+    button.roll_modal = roll_modal
+    return button
+
 def make_title_box(height: str, width: str, title: str):
     box_style = f"background-color: #f9f9f9; border: 1px solid #ccc; shadow-lg; padding: 20px; w-{width}; height: {height}; overflow-y: auto rounded"
     box = jp.Div(classes="border border-gray-300 shadow-lg p-4 rounded-md m-4 flex items-center justify-center", style=box_style)
@@ -77,13 +86,8 @@ def make_abilities_box(upper_container, char, rng):
         ability_name = jp.Td(classes="border-t py-2 px-3")
         tr.add(ability_name)
         roll_modal = make_roll_modal(upper_container, [get_stat_modifier(char.stats[ability.value])], die=20, num_die=1, rng=rng)
-        btn = jp.Button(
-            text=ability.name,
-            classes="bg-blue-500 text-white rounded px-4 py-2",
-            click=toggle_roll_modal$(rng=rng, modifier=[get_stat_modifier(char.stats[ability.value])], die=20, num_die=1)
-        )
-        btn.roll_modal = roll_modal
-        ability_name.add(btn)
+        button = make_roll_button(rng, roll_modal, text=ability.name, modifier=[get_stat_modifier(char.stats[ability.value])])
+        ability_name.add(button)
         score = jp.Td(classes="border-t py-2 px-3", text=str(char.stats[ability.value]))
         tr.add(score)
         modifier = jp.Td(classes="border-t py-2 px-3", text=str(get_stat_modifier(char.stats[ability.value])))
@@ -135,25 +139,16 @@ def make_weapons_box(upper_container, char, rng) -> dict[str, ((int; ...); str; 
                     curr_val += char
         modifier = curr_val
         attack_roll_modal = make_roll_modal(upper_container, [*attack_bonus], die=20, num_die=1, rng=rng)
-        attack_btn = jp.Button(
-            text=weapon,
-            classes="bg-blue-500 text-white rounded px-4 py-2",
-            click=toggle_roll_modal$(rng=rng, modifier=[int(modifier)], die=20, num_die=1)
-        )
-        attack_btn.roll_modal = attack_roll_modal
-        weapon_name.add(attack_btn)
+        attack_button = make_roll_button(rng, attack_roll_modal, text=weapon, modifier=[*attack_bonus])
+        weapon_name.add(attack_button)
         attack_bonus_cell = jp.Td(classes="border-t py-2 px-3", text="/".join(map(str, attack_bonus)))
         table_row.add(attack_bonus_cell)
         damage_cell = jp.Td(classes="border-t py-2 px-3")
         table_row.add(damage_cell)
         damage_roll_modal = make_roll_modal(upper_container, [int(modifier)], die=int(die), num_die=int(num_die), rng=rng)
-        damage_btn = jp.Button(
-            text=damage,
-            classes="bg-blue-500 text-white rounded px-4 py-2",
-            click=toggle_roll_modal$(rng=rng, modifier=[int(modifier)], die=int(die), num_die=int(num_die))
-        )
-        damage_btn.roll_modal = damage_roll_modal
-        damage_cell.add(damage_btn)
+        damage_button = make_roll_button(
+            rng, damage_roll_modal, text=damage, modifier=[int(modifier)], die=int(die), num_die=int(num_die))
+        damage_cell.add(damage_button)
         multiplier_cell = jp.Td(classes="border-t py-2 px-3", text=multiplier)
         table_row.add(multiplier_cell)
 
@@ -189,13 +184,8 @@ def make_saves_box(upper_container, char, rng):
         throw_name = jp.Td(classes="border-t py-2 px-3")
         tr.add(throw_name)
         roll_modal = make_roll_modal(upper_container, [char.saving_throws[throw.value]], die=20, num_die=1, rng=rng)
-        btn = jp.Button(
-            text=throw.name,
-            classes="bg-blue-500 text-white rounded px-4 py-2",
-            click=toggle_roll_modal$(rng=rng, modifier=[char.saving_throws[throw.value]], die=20, num_die=1)
-        )
-        btn.roll_modal = roll_modal
-        throw_name.add(btn)
+        button = make_roll_button(rng, roll_modal, text=throw.name, modifier=[char.saving_throws[throw.value]])
+        throw_name.add(button)
         total = jp.Td(classes="border-t py-2 px-3", text=str(char.saving_throws[throw.value]))
         tr.add(total)
     return save_row
@@ -254,13 +244,8 @@ def make_skills_box(upper_container, char, rng):
         skill_name = jp.Td(classes="border-t py-2 px-3")
         table_row.add(skill_name)
         roll_modal = make_roll_modal(upper_container, [modifier], die=20, num_die=1, rng=rng)
-        btn = jp.Button(
-            text=skill,
-            classes="bg-blue-500 text-white rounded px-4 py-2",
-            click=toggle_roll_modal$(rng=rng, modifier=[modifier], die=20, num_die=1)
-        )
-        btn.roll_modal = roll_modal
-        skill_name.add(btn)
+        button = make_roll_button(rng, roll_modal, text=skill, modifier=[modifier])
+        skill_name.add(button)
         modifier_cell = jp.Td(classes="border-t py-2 px-3", text=modifier)
         table_row.add(modifier_cell)
 
