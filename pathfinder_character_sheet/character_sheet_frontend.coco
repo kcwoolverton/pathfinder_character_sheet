@@ -49,6 +49,12 @@ def make_col_flex_div():
 def make_one_third_col_div():
     return jp.Div(classes="flex flex-col w-1/3 gap-4")
 
+def make_roll_result_text(rolls: list[int], modifiers: list[int]) -> str:
+    text = []
+    for i in range(len(rolls)):
+        text.append(f"Result: {rolls[i]} + {modifiers[i]} = {rolls[i] + modifiers[i]}")
+    return "<br>".join(text)
+
 def make_title_box(height: str, width: str, title: str):
     box_style = f"background-color: #f9f9f9; border: 1px solid #ccc; shadow-lg; padding: 20px; w-{width}; height: {height}; overflow-y: auto rounded"
     box = jp.Div(classes="border border-gray-300 shadow-lg p-4 rounded-md m-4 flex items-center justify-center", style=box_style)
@@ -231,10 +237,7 @@ def toggle_roll_modal(self, msg, rng, die, num_die, modifier):
             for _ in range(int(num_die)):
                 result += rng.randint(1, int(die))
             rolls.append(result)
-        text = []
-        for i in range(len(rolls)):
-            text.append("Result: " + str(rolls[i]) + " + " + str(modifier[i]) + " = " + str(rolls[i] + modifier[i]))
-        self.roll_modal.content.text = "\n".join(text)
+        self.roll_modal.content.inner_html = make_roll_result_text(rolls, modifier)
     self.roll_modal.show = not self.roll_modal.show
 
 def make_roll_modal(upper_container, modifier, die, num_die, rng):
@@ -252,10 +255,7 @@ def make_roll_modal(upper_container, modifier, die, num_die, rng):
         for _ in range(int(num_die)):
             result += rng.randint(1, int(die))
         rolls.append(result)
-    text = []
-    for i in range(len(rolls)):
-        text.append("Result: " + str(rolls[i]) + " + " + str(modifier[i]) + " = " + str(rolls[i] + modifier[i]))
-    modal_text = jp.P(text="\n".join(text), classes="mb-4")
+    modal_text = jp.P(text=make_roll_result_text(rolls, modifier), classes="mb-4")
     modal_content.add(modal_text)
     modal_backdrop.content = modal_text
 
