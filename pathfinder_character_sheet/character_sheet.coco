@@ -4,6 +4,7 @@ import xml.etree.ElementTree as ET
 import argparse
 from enum import Enum
 from dataclasses import field
+from random import Random
 
 parser = argparse.ArgumentParser(description='Process some integers.')
 parser.add_argument('input_file', type=str, help='The xml file for your character.')
@@ -303,7 +304,10 @@ def make_useful_info_row(char):
     useful_info_row.add(hp_box, init_box, ac_box, resistence_box, stats_box)
     return useful_info_row
 
-def make_abilities_box(char):
+def toggle_roll_modal(self, msg):
+    self.roll_modal.show = not self.roll_modal.show
+
+def make_abilities_box(upper_container, char, rng):
     main_div = jp.Div(classes="flex-col w-full p-4 m-4", style="background-color: #f9f9f9;")
 
     table = jp.Table(classes="min-w-full bg-white border rounded shadow")
@@ -326,8 +330,12 @@ def make_abilities_box(char):
     for ability in Stats:
         tr = jp.Tr()
         tbody.add(tr)
-        ability_name = jp.Td(classes="border-t py-2 px-3", text=ability.name)
+        ability_name = jp.Td(classes="border-t py-2 px-3")
         tr.add(ability_name)
+        roll_modal = make_roll_modal(upper_container, get_stat_modifier(char.stats[ability.value]), 20, rng)
+        btn = jp.Button(text=ability.name, classes="bg-blue-500 text-white rounded px-4 py-2", click=toggle_roll_modal)
+        btn.roll_modal = roll_modal
+        ability_name.add(btn)
         score = jp.Td(classes="border-t py-2 px-3", text=str(char.stats[ability.value]))
         tr.add(score)
         modifier = jp.Td(classes="border-t py-2 px-3", text=str(get_stat_modifier(char.stats[ability.value])))
@@ -338,19 +346,41 @@ def make_attack_box(char):
     main_container = jp.Div(classes="flex-col w-full p-4 m-4", style="background-color: #f9f9f9;")
     return main_container
 
-def make_large_row(char):
+def make_large_row(upper_container, char, rng):
     main_row = jp.Div(classes="flex w-full p-4 m-4", style="background-color: #f9f9f9;")
     abilities_and_attack_column = jp.Div(classes="flex flex-col w-1/3 gap-4")
-    abilities_box = make_abilities_box(char)
+    abilities_box = make_abilities_box(upper_container, char, rng)
     attack_box = make_attack_box(char)
     abilities_and_attack_column.add(abilities_box, attack_box)
     main_row.add(abilities_and_attack_column)
     return main_row
 
+def make_roll_modal(upper_container, modifier, die, rng):
+    modal_backdrop = jp.Div(classes="fixed w-full h-full top-0 left-0 flex items-center justify-center bg-black bg-opacity-50", show=False)
+    upper_container.add(modal_backdrop)
+
+    modal_content = jp.Div(classes="bg-white rounded shadow-lg w-1/3 p-8 m-4 relative")
+    modal_backdrop.add(modal_content)
+    modal_title = jp.H1(text=f"Roll", classes="text-xl font-bold mb-4")
+    modal_content.add(modal_title)
+
+    result = rng.randint(1, die)
+    modal_text = jp.P(text="Result: " + str(result) + " + " + str(modifier) + " = " + str(result + modifier), classes="mb-4")
+    modal_content.add(modal_text)
+
+    # Close button inside the modal
+    close_button = jp.Button(text="Close", classes="bg-red-500 text-white px-4 py-2", click=toggle_roll_modal)
+    close_button.roll_modal = modal_backdrop
+    modal_content.add(close_button)
+
+    return modal_backdrop
+
+
 def server(char):
     wp = jp.WebPage()
     main_div = jp.Div(classes="w-full h-screen p-4", style="background-color: #f9f9f9;", a=wp)
-    main_div.add(make_title_row(char), make_useful_info_row(char), make_large_row(char))
+    rng = Random()
+    main_div.add(make_title_row(char), make_useful_info_row(char), make_large_row(wp, char, rng))
     return wp
 
 if __name__ == "__main__":
