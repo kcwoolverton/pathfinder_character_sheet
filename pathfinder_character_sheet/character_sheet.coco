@@ -353,7 +353,7 @@ def make_abilities_box(upper_container, char, rng):
         ability_name = jp.Td(classes="border-t py-2 px-3")
         tr.add(ability_name)
         roll_modal = make_roll_modal(upper_container, get_stat_modifier(char.stats[ability.value]), rng)
-        btn = jp.Button(text=ability.name, classes="bg-blue-500 text-white rounded px-4 py-2", click=toggle_roll_modal$(rng=rng, modifier=modifier))
+        btn = jp.Button(text=ability.name, classes="bg-blue-500 text-white rounded px-4 py-2", click=toggle_roll_modal$(rng=rng, modifier=get_stat_modifier(char.stats[ability.value])))
         btn.roll_modal = roll_modal
         ability_name.add(btn)
         score = jp.Td(classes="border-t py-2 px-3", text=str(char.stats[ability.value]))
@@ -367,10 +367,10 @@ def make_attack_box(char):
     return main_container
 
 def make_saves_box(upper_container, char, rng):
-    main_div = jp.Div(classes="flex-col w-full p-4 m-4", style="background-color: #f9f9f9;")
+    save_row = jp.Div(classes="flex-col w-full p-4 m-4", style="background-color: #f9f9f9;")
 
     table = jp.Table(classes="min-w-full bg-white border rounded shadow")
-    main_div.add(table)
+    save_row.add(table)
 
     thead = jp.Thead(classes="bg-gray-300")
     table.add(thead)
@@ -397,7 +397,7 @@ def make_saves_box(upper_container, char, rng):
         throw_name.add(btn)
         total = jp.Td(classes="border-t py-2 px-3", text=str(char.saving_throws[throw.value]))
         tr.add(total)
-    return main_div
+    return save_row
 
 def make_lang_box(char):
     lang_row = jp.Div(classes="flex-col w-full p-4 m-4", style="background-color: #f9f9f9;")
@@ -427,6 +427,40 @@ def make_lang_box(char):
 
     return lang_row
 
+def make_skills_box(upper_container, char, rng):
+    skills_row = jp.Div(classes="flex-col w-full p-4 m-4", style="background-color: #f9f9f9;")
+
+    table = jp.Table(classes="min-w-full bg-white border rounded shadow")
+    skills_row.add(table)
+
+    thead = jp.Thead(classes="bg-gray-300")
+    table.add(thead)
+    header_row = jp.Tr()
+    thead.add(header_row)
+
+    headers = ["Skill", "Modifier"]
+    for header in headers:
+        th = jp.Th(classes="text-left py-2 px-3", text=header)
+        header_row.add(th)
+
+    # Table body
+    tbody = jp.Tbody()
+    table.add(tbody)
+
+    for skill, modifier in char.skills.items():
+        table_row = jp.Tr()
+        tbody.add(table_row)
+        skill_name = jp.Td(classes="border-t py-2 px-3")
+        table_row.add(skill_name)
+        roll_modal = make_roll_modal(upper_container, modifier, rng)
+        btn = jp.Button(text=skill, classes="bg-blue-500 text-white rounded px-4 py-2", click=toggle_roll_modal$(rng=rng, modifier=modifier))
+        btn.roll_modal = roll_modal
+        skill_name.add(btn)
+        modifier_cell = jp.Td(classes="border-t py-2 px-3", text=modifier)
+        table_row.add(modifier_cell)
+
+    return skills_row
+
 def make_large_row(upper_container, char, rng):
     main_row = jp.Div(classes="flex w-full p-4 m-4", style="background-color: #f9f9f9;")
 
@@ -441,7 +475,10 @@ def make_large_row(upper_container, char, rng):
     lang_box = make_lang_box(char)
     saves_langs_and_proficiencies_col.add(saves_box, lang_box)
 
-    main_row.add(abilities_and_attack_column, saves_langs_and_proficiencies_col)
+    skills_col = jp.Div(classes="flex flex-col w-1/3 gap-4")
+    skills_col.add(make_skills_box(upper_container, char, rng))
+
+    main_row.add(abilities_and_attack_column, saves_langs_and_proficiencies_col, skills_col)
     return main_row
 
 def toggle_roll_modal(self, msg, rng, modifier):
