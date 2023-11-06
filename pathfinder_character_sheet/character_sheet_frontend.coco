@@ -49,6 +49,15 @@ def make_col_flex_div():
 def make_one_third_col_div():
     return jp.Div(classes="flex flex-col w-1/3 gap-4")
 
+def roll_dice(rng, die_type, num_dice, num_rolls) -> list[int]:
+    rolls = []
+    for _ in range(num_rolls):
+        result = 0
+        for _ in range(num_dice):
+            result += rng.randint(1, die_type)
+        rolls.append(result)
+    return rolls
+
 def make_roll_result_text(rolls: list[int], modifiers: list[int]) -> str:
     text = []
     for i in range(len(rolls)):
@@ -73,18 +82,19 @@ def make_title_row(char):
 def make_useful_info_row(char):
     useful_info_row = make_col_flex_div()
 
-    table, table_body = make_table(["Hit Points", "Initiative", "Armor Class", "Resistances", "Useful Info"])
+    table, table_body = make_table(["Hit Points", "Initiative", "Armor Class", "Immunities", "Resistances", "Useful Info"])
     useful_info_row.add(table)
 
     hit_points_data = make_cell_div(text=char.max_hp)
     initiative_data = make_cell_div(text=char.initiative)
     ac_data = make_cell_div(text=char.ac)
+    immunity_data = make_cell_div(text="")
     resistance_data = make_cell_div(text="")
     info_data = make_cell_div(text="")
 
     table_row = jp.Tr()
     table_body.add(table_row)
-    table_row.add(hit_points_data, initiative_data, ac_data, resistance_data, info_data)
+    table_row.add(hit_points_data, initiative_data, ac_data, immunity_data, resistance_data, info_data)
     return useful_info_row
 
 def make_abilities_box(upper_container, char, rng):
@@ -231,12 +241,7 @@ def make_large_row(upper_container, char, rng):
 
 def toggle_roll_modal(self, msg, rng, die, num_die, modifier):
     if not self.roll_modal.show:
-        rolls = []
-        for mod in modifier:
-            result = 0
-            for _ in range(int(num_die)):
-                result += rng.randint(1, int(die))
-            rolls.append(result)
+        rolls = roll_dice(rng, die_type=int(die), num_dice=int(num_die), num_rolls=len(modifier))
         self.roll_modal.content.inner_html = make_roll_result_text(rolls, modifier)
     self.roll_modal.show = not self.roll_modal.show
 
@@ -249,12 +254,7 @@ def make_roll_modal(upper_container, modifier, die, num_die, rng):
     modal_backdrop.add(modal_content)
     modal_title = jp.H1(text=f"Roll", classes="text-xl font-bold mb-4")
     modal_content.add(modal_title)
-    rolls = []
-    for mod in modifier:
-        result = 0
-        for _ in range(int(num_die)):
-            result += rng.randint(1, int(die))
-        rolls.append(result)
+    rolls = roll_dice(rng, die_type=int(die), num_dice=int(num_die), num_rolls=len(modifier))
     modal_text = jp.P(text=make_roll_result_text(rolls, modifier), classes="mb-4")
     modal_content.add(modal_text)
     modal_backdrop.content = modal_text
