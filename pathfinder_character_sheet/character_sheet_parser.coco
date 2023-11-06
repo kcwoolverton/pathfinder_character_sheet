@@ -50,7 +50,8 @@ class Character:
     alignment: str = ''
     char_classes: (str; ...) = ''
     archetypes: (str; ...) = ()
-    vision: dict[str, int] = field(default_factory=dict)
+    # TODO: fix vision
+    # vision: dict[str, int] = field(default_factory=dict)
     movement: (int; int; int; int) = (0, 0, 0, 0)
     damage_reduction: dict[str, int] = field(default_factory=dict)
     stats: (int; int; int; int; int; int) = (0, 0, 0, 0, 0, 0)
@@ -239,7 +240,7 @@ def parse_xml(input_file) -> Character:
         char_classes=parse_classes(root),
         languages=parse_languages(root),
         movement=parse_movement(root),
-        vision=parse_vision(root),
+        # vision=parse_vision(root),
         gold=parse_gold(root),
         curr_gold=parse_gold(root),
         stats=parse_stats(root),

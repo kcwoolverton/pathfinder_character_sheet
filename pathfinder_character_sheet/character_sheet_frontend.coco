@@ -4,6 +4,31 @@ from random import Random
 import justpy as jp
 from pathfinder_character_sheet.character_sheet_parser import *
 
+# Spell like abilities
+# Other abilities
+# Feats
+# Resistance
+# Immunities
+# Fix vision
+# ranged weapons damage parse
+# Conditional modifiers
+# HP text box
+# AC, saves, attack text box
+# Spell counters (checkboxes)
+# Long rest button
+# Make look not bad
+# Readme
+
+def make_mod_text(mods) -> str:
+    output = []
+    for mod in mods:
+        mod_str = str(mod)
+        if int(mod) >= 0:
+            mod_str = "+" + str(mod)
+        output.append(mod_str)
+
+    return "/".join(output)
+
 def make_roll_button(rng, roll_modal, text="", modifier=0, die=20, num_dice=1):
     button = jp.Button(
         text=text,
@@ -104,7 +129,7 @@ def make_useful_info_row(upper_container, char, rng):
     hit_points_data = make_cell_div(text=char.max_hp)
     initiative_data = make_button_div()
     roll_modal = make_roll_modal(upper_container, modifier=[char.initiative], rng=rng)
-    roll_button = make_roll_button(rng, roll_modal, text=char.initiative, modifier=[char.initiative])
+    roll_button = make_roll_button(rng, roll_modal, text=make_mod_text([char.initiative]), modifier=[char.initiative])
     initiative_data.add(roll_button)
     ac_data = make_ac_cell(char)
     immunity_data = make_cell_div(text="")
@@ -132,7 +157,7 @@ def make_abilities_box(upper_container, char, rng):
         ability_name.add(button)
         score = make_cell_div(text=str(char.stats[ability.value]))
         table_row.add(score)
-        modifier = make_cell_div(text=str(get_stat_modifier(char.stats[ability.value])))
+        modifier = make_cell_div(text=make_mod_text([get_stat_modifier(char.stats[ability.value])]))
         table_row.add(modifier)
     return ability_row
 
@@ -149,6 +174,7 @@ def make_weapons_box(upper_container, char, rng) -> dict[str, ((int; ...); str; 
         table_row.add(weapon_name)
         num_dice, die, modifier = "", "", ""
         curr_val = ""
+        print(f"{damage=}")
         for char in damage:
             if num_dice == "":
                 if char == 'd':
@@ -169,7 +195,7 @@ def make_weapons_box(upper_container, char, rng) -> dict[str, ((int; ...); str; 
         attack_roll_modal = make_roll_modal(upper_container, modifier=[*attack_bonus], rng=rng)
         attack_button = make_roll_button(rng, attack_roll_modal, text=weapon, modifier=[*attack_bonus])
         weapon_name.add(attack_button)
-        attack_bonus_cell = make_cell_div(text="/".join(map(str, attack_bonus)))
+        attack_bonus_cell = make_cell_div(text=make_mod_text(attack_bonus))
         table_row.add(attack_bonus_cell)
         damage_cell = make_button_div()
         table_row.add(damage_cell)
@@ -200,7 +226,7 @@ def make_saves_box(upper_container, char, rng):
         roll_modal = make_roll_modal(upper_container, modifier=[char.saving_throws[throw.value]], rng=rng)
         button = make_roll_button(rng, roll_modal, text=throw.name, modifier=[char.saving_throws[throw.value]])
         throw_name.add(button)
-        total = make_cell_div(text=str(char.saving_throws[throw.value]))
+        total = make_cell_div(text=make_mod_text([char.saving_throws[throw.value]]))
         table_row.add(total)
     return save_row
 
@@ -267,7 +293,7 @@ def make_skills_box(upper_container, char, rng):
         roll_modal = make_roll_modal(upper_container, modifier=[modifier], rng=rng)
         button = make_roll_button(rng, roll_modal, text=skill, modifier=[modifier])
         skill_name.add(button)
-        modifier_cell = make_cell_div(text=modifier)
+        modifier_cell = make_cell_div(text=make_mod_text([modifier]))
         table_row.add(modifier_cell)
 
     return skills_row
