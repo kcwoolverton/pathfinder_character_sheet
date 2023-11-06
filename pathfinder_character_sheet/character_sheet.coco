@@ -12,7 +12,7 @@ def server(char):
     wp = jp.WebPage()
     main_div = jp.Div(classes="w-full h-screen p-4", style="background-color: #f9f9f9;", a=wp)
     rng = Random()
-    main_div.add(make_title_row(char), make_useful_info_row(char), make_large_row(wp, char, rng))
+    main_div.add(make_title_row(char), make_useful_info_row(wp, char, rng), make_large_row(wp, char, rng))
     return wp
 
 if __name__ == "__main__":

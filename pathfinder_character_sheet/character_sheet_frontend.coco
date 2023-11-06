@@ -4,12 +4,12 @@ from random import Random
 import justpy as jp
 from pathfinder_character_sheet.character_sheet_parser import *
 
-def make_roll_button(rng, roll_modal, text="", modifier=0, die=20, num_die=1):
+def make_roll_button(rng, roll_modal, text="", modifier=0, die=20, num_dice=1):
     button = jp.Button(
-            text=text,
-            classes="bg-blue-500 text-white rounded px-4 py-2",
-            click=toggle_roll_modal$(rng=rng, modifier=modifier, die=die, num_die=num_die)
-        )
+        text=text,
+        classes="bg-blue-500 text-white rounded px-4 py-2",
+        click=toggle_roll_modal$(rng=rng, modifier=modifier, die=die, num_dice=num_dice)
+    )
     button.roll_modal = roll_modal
     return button
 
@@ -38,7 +38,7 @@ def make_button_div():
     return jp.Td(classes=make_cell_style_class())
 
 def make_cell_div(text):
-    return jp.Td(classes=make_cell_style_class(), text=text)
+    return jp.Td(classes=make_cell_style_class(), inner_html=text)
 
 def make_row_flex_div():
     return jp.Div(classes="flex w-full p-4 m-4", style="background-color: #f9f9f9;")
@@ -79,15 +79,34 @@ def make_title_row(char):
     title_row.add(name_box, class_box, level_box)
     return title_row
 
-def make_useful_info_row(char):
+def make_ac_cell(char):
+    ac_cell = make_col_flex_div()
+    table, table_body = make_table([])
+    ac_cell.add(table)
+
+    total_data = make_cell_div(text=f"Total: {char.ac.total}")
+    touch_data = make_cell_div(text=f"Touch: {char.ac.touch}")
+    flat_data = make_cell_div(text=f"Flat: {char.ac.flat}")
+
+    table_row = jp.Tr()
+    table_row.add(total_data, touch_data, flat_data)
+
+    table_body.add(table_row)
+
+    return ac_cell
+
+def make_useful_info_row(upper_container, char, rng):
     useful_info_row = make_col_flex_div()
 
     table, table_body = make_table(["Hit Points", "Initiative", "Armor Class", "Immunities", "Resistances", "Useful Info"])
     useful_info_row.add(table)
 
     hit_points_data = make_cell_div(text=char.max_hp)
-    initiative_data = make_cell_div(text=char.initiative)
-    ac_data = make_cell_div(text=char.ac)
+    initiative_data = make_button_div()
+    roll_modal = make_roll_modal(upper_container, modifier=[char.initiative], rng=rng)
+    roll_button = make_roll_button(rng, roll_modal, text=char.initiative, modifier=[char.initiative])
+    initiative_data.add(roll_button)
+    ac_data = make_ac_cell(char)
     immunity_data = make_cell_div(text="")
     resistance_data = make_cell_div(text="")
     info_data = make_cell_div(text="")
@@ -108,7 +127,7 @@ def make_abilities_box(upper_container, char, rng):
         table_body.add(table_row)
         ability_name = make_button_div()
         table_row.add(ability_name)
-        roll_modal = make_roll_modal(upper_container, [get_stat_modifier(char.stats[ability.value])], die=20, num_die=1, rng=rng)
+        roll_modal = make_roll_modal(upper_container, modifier=[get_stat_modifier(char.stats[ability.value])], rng=rng)
         button = make_roll_button(rng, roll_modal, text=ability.name, modifier=[get_stat_modifier(char.stats[ability.value])])
         ability_name.add(button)
         score = make_cell_div(text=str(char.stats[ability.value]))
@@ -128,12 +147,12 @@ def make_weapons_box(upper_container, char, rng) -> dict[str, ((int; ...); str; 
         table_body.add(table_row)
         weapon_name = make_button_div()
         table_row.add(weapon_name)
-        num_die, die, modifier = "", "", ""
+        num_dice, die, modifier = "", "", ""
         curr_val = ""
         for char in damage:
-            if num_die == "":
+            if num_dice == "":
                 if char == 'd':
-                    num_die = curr_val
+                    num_dice = curr_val
                     curr_val = ""
                 else:
                     curr_val += char
@@ -147,16 +166,16 @@ def make_weapons_box(upper_container, char, rng) -> dict[str, ((int; ...); str; 
                 if not char == " ":
                     curr_val += char
         modifier = curr_val
-        attack_roll_modal = make_roll_modal(upper_container, [*attack_bonus], die=20, num_die=1, rng=rng)
+        attack_roll_modal = make_roll_modal(upper_container, modifier=[*attack_bonus], rng=rng)
         attack_button = make_roll_button(rng, attack_roll_modal, text=weapon, modifier=[*attack_bonus])
         weapon_name.add(attack_button)
         attack_bonus_cell = make_cell_div(text="/".join(map(str, attack_bonus)))
         table_row.add(attack_bonus_cell)
         damage_cell = make_button_div()
         table_row.add(damage_cell)
-        damage_roll_modal = make_roll_modal(upper_container, [int(modifier)], die=int(die), num_die=int(num_die), rng=rng)
+        damage_roll_modal = make_roll_modal(upper_container, modifier=[int(modifier)], die=int(die), num_dice=int(num_dice), rng=rng)
         damage_button = make_roll_button(
-            rng, damage_roll_modal, text=damage, modifier=[int(modifier)], die=int(die), num_die=int(num_die))
+            rng, damage_roll_modal, text=damage, modifier=[int(modifier)], die=int(die), num_dice=int(num_dice))
         damage_cell.add(damage_button)
         multiplier_cell = make_cell_div(text=multiplier)
         table_row.add(multiplier_cell)
@@ -178,7 +197,7 @@ def make_saves_box(upper_container, char, rng):
         table_body.add(table_row)
         throw_name = make_button_div()
         table_row.add(throw_name)
-        roll_modal = make_roll_modal(upper_container, [char.saving_throws[throw.value]], die=20, num_die=1, rng=rng)
+        roll_modal = make_roll_modal(upper_container, modifier=[char.saving_throws[throw.value]], rng=rng)
         button = make_roll_button(rng, roll_modal, text=throw.name, modifier=[char.saving_throws[throw.value]])
         throw_name.add(button)
         total = make_cell_div(text=str(char.saving_throws[throw.value]))
@@ -199,6 +218,41 @@ def make_lang_box(char):
 
     return lang_row
 
+def make_spell_text(spell: Spell) -> str:
+    return f"<b>DC:</b> {spell.dc} | <b>Save:</b> {spell.save_info} | <b>Casting Time:</b> {spell.casting_time} | <b>Target:</b> {spell.target} | <b>Range:</b> {spell.spell_range} | <b>Duration:</b> {spell.duration}<br>{spell.effect}"
+
+def toggle_spell_content(self, msg):
+    if 'hidden' in self.content.classes:
+        self.content.remove_class('hidden')
+    else:
+        self.content.set_class('hidden')
+
+def make_collapseable_comp(upper_container, spell: Spell):
+    content = jp.Div(inner_html=make_spell_text(spell), classes='mt-4 border p-4 hidden')
+
+    button = jp.Button(text=spell.name, classes='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded', click=toggle_spell_content)
+    button.content = content
+
+    upper_container.add(button)
+
+    return content
+
+def make_spells_box(char):
+    spells_row = make_col_flex_div()
+    table, table_body = make_table(["Spell", "Level"])
+
+    spells_row.add(table)
+
+    for spell in char.spells:
+        table_row = jp.Tr()
+        table_body.add(table_row)
+        spell_cell = make_button_div()
+        spell_cell.add(make_collapseable_comp(spell_cell, spell))
+        table_row.add(spell_cell)
+        table_row.add(make_cell_div(text=spell.level))
+
+    return spells_row
+
 def make_skills_box(upper_container, char, rng):
     skills_row = make_col_flex_div()
 
@@ -210,7 +264,7 @@ def make_skills_box(upper_container, char, rng):
         table_body.add(table_row)
         skill_name = make_button_div()
         table_row.add(skill_name)
-        roll_modal = make_roll_modal(upper_container, [modifier], die=20, num_die=1, rng=rng)
+        roll_modal = make_roll_modal(upper_container, modifier=[modifier], rng=rng)
         button = make_roll_button(rng, roll_modal, text=skill, modifier=[modifier])
         skill_name.add(button)
         modifier_cell = make_cell_div(text=modifier)
@@ -227,25 +281,27 @@ def make_large_row(upper_container, char, rng):
     attack_box = make_attack_box(char)
     abilities_attack_and_weapons_column.add(abilities_box, weapons_box, attack_box)
 
-    saves_langs_and_proficiencies_col = make_one_third_col_div()
+    # saves, langs, proficiencies, spells
+    middle_col = make_one_third_col_div()
     saves_box = make_saves_box(upper_container, char, rng)
+    spells_box = make_spells_box(char)
     # proficiencies_box = make_proficiencies_box(char)
     lang_box = make_lang_box(char)
-    saves_langs_and_proficiencies_col.add(saves_box, lang_box)
+    middle_col.add(saves_box, lang_box, spells_box)
 
     skills_col = make_one_third_col_div()
     skills_col.add(make_skills_box(upper_container, char, rng))
 
-    main_row.add(abilities_attack_and_weapons_column, saves_langs_and_proficiencies_col, skills_col)
+    main_row.add(abilities_attack_and_weapons_column, middle_col, skills_col)
     return main_row
 
-def toggle_roll_modal(self, msg, rng, die, num_die, modifier):
+def toggle_roll_modal(self, msg, rng, die=20, num_dice=1, modifier=0):
     if not self.roll_modal.show:
-        rolls = roll_dice(rng, die_type=int(die), num_dice=int(num_die), num_rolls=len(modifier))
+        rolls = roll_dice(rng, die_type=int(die), num_dice=int(num_dice), num_rolls=len(modifier))
         self.roll_modal.content.inner_html = make_roll_result_text(rolls, modifier)
     self.roll_modal.show = not self.roll_modal.show
 
-def make_roll_modal(upper_container, modifier, die, num_die, rng):
+def make_roll_modal(upper_container, rng, modifier=0, die=20, num_dice=1):
     modal_backdrop = jp.Div(
         classes="fixed w-full h-full top-0 left-0 flex items-center justify-center bg-black bg-opacity-50", show=False)
     upper_container.add(modal_backdrop)
@@ -254,7 +310,7 @@ def make_roll_modal(upper_container, modifier, die, num_die, rng):
     modal_backdrop.add(modal_content)
     modal_title = jp.H1(text=f"Roll", classes="text-xl font-bold mb-4")
     modal_content.add(modal_title)
-    rolls = roll_dice(rng, die_type=int(die), num_dice=int(num_die), num_rolls=len(modifier))
+    rolls = roll_dice(rng, die_type=int(die), num_dice=int(num_dice), num_rolls=len(modifier))
     modal_text = jp.P(text=make_roll_result_text(rolls, modifier), classes="mb-4")
     modal_content.add(modal_text)
     modal_backdrop.content = modal_text
@@ -262,7 +318,7 @@ def make_roll_modal(upper_container, modifier, die, num_die, rng):
     # Close button inside the modal
     close_button = jp.Button(
         text="Close", classes="bg-red-500 text-white px-4 py-2",
-        click=toggle_roll_modal$(rng=rng, modifier=[modifier], die=20, num_die=1)
+        click=toggle_roll_modal$(rng=rng, modifier=[modifier])
     )
     close_button.roll_modal = modal_backdrop
     modal_content.add(close_button)
