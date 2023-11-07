@@ -5,7 +5,7 @@ from coconut.api import cmd
 
 
 if __name__ == "__main__":
-    cmd([os.path.join(os.path.dirname(__file__), "pathfinder_character_sheet")])
+    cmd([os.path.join(os.path.dirname(__file__), "pathfinder_character_sheet"), "--incremental"])
 
 setuptools.setup(
     name="pathfinder_character_sheet",

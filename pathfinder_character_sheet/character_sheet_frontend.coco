@@ -4,16 +4,11 @@ from random import Random
 import justpy as jp
 from pathfinder_character_sheet.character_sheet_parser import *
 
-# Spell like abilities
-# Other abilities
-# Feats
-# Resistance
-# Immunities
 # Fix vision
 # ranged weapons damage parse
+# Damage reduction
 # Conditional modifiers
 # HP text box
-# AC, saves, attack text box
 # Spell counters (checkboxes)
 # Long rest button
 # Make look not bad
@@ -99,7 +94,10 @@ def make_title_box(height: str, width: str, title: str):
 def make_title_row(char):
     title_row = make_row_flex_div()
     name_box = make_title_box("50px", "1/8", char.name)
-    class_box = make_title_box("50px", "1/4", "".join(char.char_classes) + ': ' + ", ".join(char.archetypes))
+    class_str = f"{', '.join(char.char_classes)}"
+    if char.archetypes:
+        class_str += ": " + ", ".join(char.archetypes)
+    class_box = make_title_box("50px", "1/4", class_str)
     level_box = make_title_box("50px", "1/8", "Level " + str(char.level))
     title_row.add(name_box, class_box, level_box)
     return title_row
@@ -123,7 +121,14 @@ def make_ac_cell(char):
 def make_useful_info_row(upper_container, char, rng):
     useful_info_row = make_col_flex_div()
 
-    table, table_body = make_table(["Hit Points", "Initiative", "Armor Class", "Immunities", "Resistances", "Useful Info"])
+    headers = ["Hit Points", "Initiative", "Armor Class"]
+    if char.immunities:
+        headers.append("Immunities")
+    if char.resistances:
+        headers.append("Resistances")
+    if char.damage_reduction:
+        headers.append("Dmg Reduction")
+    table, table_body = make_table(headers)
     useful_info_row.add(table)
 
     hit_points_data = make_cell_div(text=char.max_hp)
@@ -132,13 +137,20 @@ def make_useful_info_row(upper_container, char, rng):
     roll_button = make_roll_button(rng, roll_modal, text=make_mod_text([char.initiative]), modifier=[char.initiative])
     initiative_data.add(roll_button)
     ac_data = make_ac_cell(char)
-    immunity_data = make_cell_div(text="")
-    resistance_data = make_cell_div(text="")
-    info_data = make_cell_div(text="")
 
     table_row = jp.Tr()
     table_body.add(table_row)
-    table_row.add(hit_points_data, initiative_data, ac_data, immunity_data, resistance_data, info_data)
+
+    table_row.add(hit_points_data, initiative_data, ac_data)
+    if char.immunities:
+        immunity_data = make_cell_div(text="<br>".join(char.immunities))
+        table_row.add(immunity_data)
+    if char.resistances:
+        resistance_data = make_cell_div(text="<br>".join(char.resistances))
+        table_row.add(resistance_data)
+    if char.damage_reduction:
+        reduction_data = make_cell_div(text="<br>".join(char.damage_reduction))
+        table_row.add(reduction_data)
     return useful_info_row
 
 def make_abilities_box(upper_container, char, rng):
@@ -191,7 +203,11 @@ def make_weapons_box(upper_container, char, rng) -> dict[str, ((int; ...); str; 
             else:
                 if not char == " ":
                     curr_val += char
-        modifier = curr_val
+        if not die:
+            die = curr_val
+            modifier = 0
+        else:
+            modifier = curr_val
         attack_roll_modal = make_roll_modal(upper_container, modifier=[*attack_bonus], rng=rng)
         attack_button = make_roll_button(rng, attack_roll_modal, text=weapon, modifier=[*attack_bonus])
         weapon_name.add(attack_button)
@@ -208,9 +224,33 @@ def make_weapons_box(upper_container, char, rng) -> dict[str, ((int; ...); str; 
 
     return weapons_row
 
-def make_attack_box(char):
-    main_container = make_col_flex_div()
-    return main_container
+def make_special_attacks_box(char):
+    attacks_row = make_col_flex_div()
+
+    table, table_body = make_table(["Special Attacks"])
+    attacks_row.add(table)
+
+    for attack in char.special_attacks:
+        table_row = jp.Tr()
+        table_body.add(table_row)
+        attack_cell = make_button_div()
+        attack_cell.add(make_collapsible_comp(attack_cell, attack.name, attack.description))
+        table_row.add(attack_cell)
+    return attacks_row
+
+def make_special_qualities_box(char):
+    qualities_row = make_col_flex_div()
+
+    table, table_body = make_table(["Special Qualities"])
+    qualities_row.add(table)
+
+    for quality in char.special_abilities:
+        table_row = jp.Tr()
+        table_body.add(table_row)
+        quality_cell = make_button_div()
+        quality_cell.add(make_collapsible_comp(quality_cell, quality.name, quality.description))
+        table_row.add(quality_cell)
+    return qualities_row
 
 def make_saves_box(upper_container, char, rng):
     save_row = make_col_flex_div()
@@ -239,6 +279,8 @@ def make_lang_box(char):
     for lang in char.languages:
         table_row = jp.Tr()
         table_body.add(table_row)
+        if lang == "Xenophobic":
+            lang = "Glorbon"
         language = make_cell_div(text=lang)
         table_row.add(language)
 
@@ -247,18 +289,20 @@ def make_lang_box(char):
 def make_spell_text(spell: Spell) -> str:
     return f"<b>DC:</b> {spell.dc} | <b>Save:</b> {spell.save_info} | <b>Casting Time:</b> {spell.casting_time} | <b>Target:</b> {spell.target} | <b>Range:</b> {spell.spell_range} | <b>Duration:</b> {spell.duration}<br>{spell.effect}"
 
-def toggle_spell_content(self, msg):
+def toggle_collapsible_content(self, msg):
     if 'hidden' in self.content.classes:
         self.content.remove_class('hidden')
     else:
         self.content.set_class('hidden')
 
-def make_collapseable_comp(upper_container, spell: Spell):
-    content = jp.Div(inner_html=make_spell_text(spell), classes='mt-4 border p-4 hidden')
-
-    button = jp.Button(text=spell.name, classes='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded', click=toggle_spell_content)
+def make_collapsible_comp(upper_container, button_name="", inner_text=""):
+    content = jp.Div(inner_html=inner_text, classes='mt-4 border p-4 hidden')
+    button = jp.Button(
+        text=button_name,
+        classes='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded',
+        click=toggle_collapsible_content
+    )
     button.content = content
-
     upper_container.add(button)
 
     return content
@@ -273,11 +317,24 @@ def make_spells_box(char):
         table_row = jp.Tr()
         table_body.add(table_row)
         spell_cell = make_button_div()
-        spell_cell.add(make_collapseable_comp(spell_cell, spell))
+        spell_cell.add(make_collapsible_comp(spell_cell, spell.name, make_spell_text(spell)))
         table_row.add(spell_cell)
         table_row.add(make_cell_div(text=spell.level))
 
     return spells_row
+
+def make_spell_like_abilities_box(char):
+    spell_like_abilities_row = make_col_flex_div()
+    table, table_body = make_table(["Spell-like Abilities"])
+
+    spell_like_abilities_row.add(table)
+
+    table_row = jp.Tr()
+    table_body.add(table_row)
+
+    table_row.add(make_cell_div(text=char.spell_like_abilities))
+
+    return spell_like_abilities_row
 
 def make_skills_box(upper_container, char, rng):
     skills_row = make_col_flex_div()
@@ -298,27 +355,64 @@ def make_skills_box(upper_container, char, rng):
 
     return skills_row
 
+def make_feats_box(char):
+    feats_row = make_col_flex_div()
+    table, table_body = make_table(["Feats"])
+
+    feats_row.add(table)
+
+    for feat in char.feats:
+        table_row = jp.Tr()
+        table_body.add(table_row)
+        feat_cell = make_button_div()
+        feat_cell.add(make_collapsible_comp(feat_cell, feat.feat_name, feat.feat_benefit))
+        table_row.add(feat_cell)
+
+    return feats_row
+
+def make_proficiencies_box(char):
+    prof_row = make_col_flex_div()
+    table, table_body = make_table(["Weapon Proficiencies"])
+
+    prof_row.add(table)
+
+    table_row = jp.Tr()
+    table_body.add(table_row)
+    prof_cell = make_cell_div(text=char.weapon_proficiencies)
+    table_row.add(prof_cell)
+
+    return prof_row
+
 def make_large_row(upper_container, char, rng):
     main_row = make_row_flex_div()
 
-    abilities_attack_and_weapons_column = make_one_third_col_div()
+    left_col = make_one_third_col_div()
     abilities_box = make_abilities_box(upper_container, char, rng)
     weapons_box = make_weapons_box(upper_container, char, rng)
-    attack_box = make_attack_box(char)
-    abilities_attack_and_weapons_column.add(abilities_box, weapons_box, attack_box)
+    left_col.add(abilities_box, weapons_box)
+    if char.special_attacks:
+        left_col.add(make_special_attacks_box(char))
+    if char.special_abilities:
+        left_col.add(make_special_qualities_box(char))
+    left_col.add(make_feats_box(char))
 
     # saves, langs, proficiencies, spells
     middle_col = make_one_third_col_div()
     saves_box = make_saves_box(upper_container, char, rng)
+    spell_like_abilities_box = make_spell_like_abilities_box(char)
     spells_box = make_spells_box(char)
-    # proficiencies_box = make_proficiencies_box(char)
-    lang_box = make_lang_box(char)
-    middle_col.add(saves_box, lang_box, spells_box)
+    middle_col.add(saves_box)
 
-    skills_col = make_one_third_col_div()
-    skills_col.add(make_skills_box(upper_container, char, rng))
+    if char.spell_like_abilities:
+        middle_col.add(spell_like_abilities_box)
 
-    main_row.add(abilities_attack_and_weapons_column, middle_col, skills_col)
+    if char.spells:
+        middle_col.add(spells_box)
+
+    right_col = make_one_third_col_div()
+    right_col.add(make_skills_box(upper_container, char, rng), make_lang_box(char), make_proficiencies_box(char))
+
+    main_row.add(left_col, middle_col, right_col)
     return main_row
 
 def toggle_roll_modal(self, msg, rng, die=20, num_dice=1, modifier=0):

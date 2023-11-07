@@ -53,7 +53,7 @@ class Character:
     # TODO: fix vision
     # vision: dict[str, int] = field(default_factory=dict)
     movement: (int; int; int; int) = (0, 0, 0, 0)
-    damage_reduction: dict[str, int] = field(default_factory=dict)
+    damage_reduction: (str; ...) = ()
     stats: (int; int; int; int; int; int) = (0, 0, 0, 0, 0, 0)
     base_attack_bonus: (int; ...) = ()
     saving_throws: (int; int; int) = (0, 0, 0)
@@ -62,6 +62,8 @@ class Character:
     melee: (int; ...) = ()
     ranged: (int; ...) = ()
     weapons: dict[str, ((int; ...); str; str)] = field(default_factory=dict)
+    # TODO
+    # ranged_weapons: dict[str, (int; ...); str; str] = field(default_factory=dict)
     cmb: dict[str, int] = ()
     cmd: dict[str, int] = ()
     spell_resistance: int = 0
@@ -70,13 +72,14 @@ class Character:
     curr_gold: int = 0
     ac_bonus: int = 0
     initiative: int = 0
-    # TODO
-    resistance: dict[str, int] = field(default_factory=dict)
+    resistances: (str; ...) = field(default_factory=dict)
+    immunities: set[str] = field(default_factory=dict)
     spells: list[Spell] = field(default_factory=list)
-    # TODO
     weapon_proficiencies: str = ''
-    # TODO
-    feats: (str; ...) = ()
+    feats: ((str; str); ...) = ()
+    spell_like_abilities: str = ""
+    special_abilities: (str; ...) = ()
+    special_attacks: (str; ) = ()
 
 def get_stat_modifier(stat_value):
     return (stat_value - 10) // 2
@@ -84,11 +87,12 @@ def get_stat_modifier(stat_value):
 def parse_hp(root: ET.Element) -> int:
     return int(root.find('hit_points/points').text)
 
-def parse_damage_reduction(root: ET.Element) -> dict[str, int]:
-    dr_dict = {}
+def parse_damage_reduction(root: ET.Element) -> (str; ...):
+    dr_list = []
     for dr in root.findall('hit_points/damage_reduction'):
-        dr_dict[dr.text.split('/')[1]] = dr.text.split('/')[0]
-    return dr_dict
+        if dr:
+            dr_list.append(dr.text)
+    return tuple(dr_list)
 
 def parse_ac(root: ET.Element) -> (int; int; int):
     return (
@@ -189,17 +193,34 @@ def parse_cmd(root: ET.Element) -> dict[str, int]:
 def parse_weapons(root: ET.Element) -> dict[str, ((int; ...), str, str)]:
     weapons = {}
     unarmed_node = root.find('weapons/unarmed')
-    weapons['unarmed'] = (
+    weapons['Unarmed'] = (
         tuple(map(int, unarmed_node.find('total').text.split('/'))),
         unarmed_node.find('damage').text,
         unarmed_node.find('critical').text
     )
+    for weapon in root.findall('weapons/weapon'):
+        if 'Ranged' in weapon.find('common/category').text:
+            continue
+        damage = weapon.find('common/damage').text
+        attack_bonus = tuple(map(int, weapon.find('common/to_hit/total_hit').text.split('/')))
+        critical = weapon.find('common/critical/range').text + '/x' + weapon.find('common/critical/multiplier').text
+        weapons[weapon.find('common/name/short').text.removeprefix('*')] = (...=attack_bonus, ...=damage, ...=critical)
+    return weapons
+
+def parse_ranged_weapons(root: ET.Element) -> dict[str, ((int; ...), str, str)]:
+    weapons = {}
     for weapon in root.findall('weapons/weapon'):
         damage = weapon.find('common/damage').text
         attack_bonus = tuple(map(int, weapon.find('common/to_hit/total_hit').text.split('/')))
         critical = weapon.find('common/critical/range').text + '/' + weapon.find('common/critical/multiplier').text
         weapons[weapon.find('common/name/long').text] = (...=attack_bonus, ...=damage, ...=critical)
     return weapons
+
+def parse_special_attacks(root: ET.Element) -> ((str; str); ...):
+    attacks = []
+    for attack in root.findall('special_attacks/special_attack'):
+        attacks.append((name=attack.find('name').text, description=attack.find('description').text))
+    return tuple(attacks)
 
 def create_spell_from_node(spell_node: ET.Element, **kwargs) -> Spell:
     return Spell(
@@ -228,11 +249,55 @@ def parse_spells(root: ET.Element) -> list[Spell]:
             spell_list.append(spell)
     return spell_list
 
+def parse_feats(root: ET.Element) -> ((str; str); ...):
+    feats = []
+    for feat in root.findall('feats/feat'):
+        if feat.find('hidden').text == "F":
+            benefit = ""
+            if feat.find('benefit').text:
+                benefit = feat.find('benefit').text
+            else:
+                benefit = feat.find('description').text
+            feats.append((feat_name=feat.find('name').text, feat_benefit=benefit))
+    return tuple(feats)
+
+def parse_resistances(root: ET.Element) -> (str; ...):
+    resistances = []
+    for resistance in root.findall('resistances/resistance'):
+            resistances.append(resistance.text)
+    return tuple(resistances)
+
+def parse_special_qualities(root: ET.Element) -> (str; set(str); (str; str)):
+    immunities = []
+    special_qualities = []
+    spell_like_abilities = ""
+    skipped_qualities = ['Bonus Feats', 'Outsider Traits', 'Resistance to']
+    for quality in root.findall('special_qualities/special_quality'):
+        name = quality.find('name').text
+
+        skip = False
+        for skipped_quality in skipped_qualities:
+            if skipped_quality in name:
+                skip = True
+        if skip:
+            continue
+
+        if 'Immunity to ' in name:
+            immunities.append(quality.find('aspect').text.removeprefix('Immunity: '))
+        elif 'Spell-Like Abilities' in name:
+            spell_like_abilities = quality.find('description').text
+        else:
+            special_qualities.append((name=name, description=quality.find('description').text))
+    return spell_like_abilities, immunities, special_qualities
+
+def parse_weapon_proficiences(root: ET.Element) -> str:
+    return root.find("weapon_proficiencies").text
 
 def parse_xml(input_file) -> Character:
     print('Parsing file to tree')
     tree = ET.parse(input_file)
     root = tree.getroot()
+    spell_like_abilities, immunities, special_qualities = parse_special_qualities(root)
     char = Character(
         name=parse_name(root),
         alignment=parse_alignment(root),
@@ -259,5 +324,13 @@ def parse_xml(input_file) -> Character:
         damage_reduction=parse_damage_reduction(root),
         spells=parse_spells(root),
         level=parse_level(root),
+        feats=parse_feats(root),
+        resistances=parse_resistances(root),
+        spell_like_abilities=spell_like_abilities,
+        immunities=immunities,
+        special_abilities=special_qualities,
+        special_attacks=parse_special_attacks(root),
+        weapon_proficiencies=parse_weapon_proficiences(root),
     )
+    print(char)
     return char
