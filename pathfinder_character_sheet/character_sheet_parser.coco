@@ -4,85 +4,8 @@ import argparse
 from enum import Enum
 from dataclasses import field
 
-class Stats(Enum):
-    STR = 0
-    DEX = 1
-    CON = 2
-    INT = 3
-    WIS = 4
-    CHA = 5
-
-class Movement(Enum):
-    Walk = 0
-    Climb = 1
-    Swim = 2
-    Fly = 3
-
-class SavingThrows(Enum):
-    fort = 0
-    ref = 1
-    will = 2
-
-@dataclass
-class Spell:
-    name: str = ''
-    times_memorized: int = 0
-    spell_range: str = ''
-    casting_time: str = ''
-    time_units: str = ''
-    dc: int = 0
-    duration: str = ''
-    effect: str = ''
-    target: str = ''
-    save_info: str = ''
-    level: int = 0
-
-@dataclass
-class Character:
-    name: str = ''
-    level: int = 0
-    max_hp: int = 0
-    current_hp: int = 0
-    ac: (int; int; int) = (0, 0, 0)
-    skills: dict[str, int] = field(default_factory=dict)
-    # TODO
-    conditional_skill_modifiers: (str; ...) = ()
-    alignment: str = ''
-    char_classes: (str; ...) = ''
-    archetypes: (str; ...) = ()
-    # TODO: fix vision
-    # vision: dict[str, int] = field(default_factory=dict)
-    movement: (int; int; int; int) = (0, 0, 0, 0)
-    damage_reduction: (str; ...) = ()
-    stats: (int; int; int; int; int; int) = (0, 0, 0, 0, 0, 0)
-    base_attack_bonus: (int; ...) = ()
-    saving_throws: (int; int; int) = (0, 0, 0)
-    # TODO
-    conditional_st_modifiers: (str; ...) = ()
-    melee: (int; ...) = ()
-    ranged: (int; ...) = ()
-    weapons: dict[str, ((int; ...); str; str)] = field(default_factory=dict)
-    # TODO
-    # ranged_weapons: dict[str, (int; ...); str; str] = field(default_factory=dict)
-    cmb: dict[str, int] = ()
-    cmd: dict[str, int] = ()
-    spell_resistance: int = 0
-    languages: (str; ...) = ()
-    gold: int = 0
-    curr_gold: int = 0
-    ac_bonus: int = 0
-    initiative: int = 0
-    resistances: (str; ...) = field(default_factory=dict)
-    immunities: set[str] = field(default_factory=dict)
-    spells: list[Spell] = field(default_factory=list)
-    weapon_proficiencies: str = ''
-    feats: ((str; str); ...) = ()
-    spell_like_abilities: str = ""
-    special_abilities: (str; ...) = ()
-    special_attacks: (str; ) = ()
-
-def get_stat_modifier(stat_value):
-    return (stat_value - 10) // 2
+from pathfinder_character_sheet.character import *
+from pathfinder_character_sheet.utils import *
 
 def parse_hp(root: ET.Element) -> int:
     return int(root.find('hit_points/points').text)
@@ -90,8 +13,8 @@ def parse_hp(root: ET.Element) -> int:
 def parse_damage_reduction(root: ET.Element) -> (str; ...):
     dr_list = []
     for dr in root.findall('hit_points/damage_reduction'):
-        if dr:
-            dr_list.append(dr.text)
+        dr_list.append(dr.text)
+    dr_list = [x for x in dr_list if x]
     return tuple(dr_list)
 
 def parse_ac(root: ET.Element) -> (int; int; int):
@@ -157,14 +80,12 @@ def parse_gold(root: ET.Element) -> int:
     return int(root.find('basics/gold').text)
 
 def parse_stats(root: ET.Element) -> ((int; int); ...):
-    print('Parsing stats')
     stat_values = [None] * len(Stats)
     for stat in root.findall('abilities/ability'):
         stat_values[Stats[stat.find("name/short").text].value] = int(stat.find('score').text)
     return tuple(stat_values)
 
 def parse_saving_throws(root: ET.Element) -> (int; int; int):
-    print('Parsing saving throws')
     throw_values = [None] * len(SavingThrows)
     for throw in root.findall('saving_throws/saving_throw'):
         throw_values[SavingThrows[throw.find("name/short").text].value] = int(throw.find('total').text)
@@ -207,13 +128,18 @@ def parse_weapons(root: ET.Element) -> dict[str, ((int; ...), str, str)]:
         weapons[weapon.find('common/name/short').text.removeprefix('*')] = (...=attack_bonus, ...=damage, ...=critical)
     return weapons
 
-def parse_ranged_weapons(root: ET.Element) -> dict[str, ((int; ...), str, str)]:
+def parse_ranged_weapons(root: ET.Element) -> dict[str, dict[str, ((int; ...); str; str)]]:
     weapons = {}
     for weapon in root.findall('weapons/weapon'):
-        damage = weapon.find('common/damage').text
-        attack_bonus = tuple(map(int, weapon.find('common/to_hit/total_hit').text.split('/')))
-        critical = weapon.find('common/critical/range').text + '/' + weapon.find('common/critical/multiplier').text
-        weapons[weapon.find('common/name/long').text] = (...=attack_bonus, ...=damage, ...=critical)
+        if not 'Ranged' in weapon.find('common/category').text:
+            continue
+        ranges = {}
+        for distance in weapon.findall('ranges/range'):
+            damage = distance.find('damage').text
+            attack_bonus = tuple(map(int, distance.find('to_hit').text.split('/')))
+            critical = weapon.find('common/critical/range').text + '/' + weapon.find('common/critical/multiplier').text
+            ranges[distance.find('distance').text] = (attack_bonus=attack_bonus, damage=damage, crit=critical)
+        weapons[weapon.find('common/name/long').text] = ranges
     return weapons
 
 def parse_special_attacks(root: ET.Element) -> ((str; str); ...):
@@ -294,7 +220,6 @@ def parse_weapon_proficiences(root: ET.Element) -> str:
     return root.find("weapon_proficiencies").text
 
 def parse_xml(input_file) -> Character:
-    print('Parsing file to tree')
     tree = ET.parse(input_file)
     root = tree.getroot()
     spell_like_abilities, immunities, special_qualities = parse_special_qualities(root)
@@ -321,6 +246,7 @@ def parse_xml(input_file) -> Character:
         cmb=parse_cmb(root),
         cmd=parse_cmd(root),
         weapons=parse_weapons(root),
+        ranged_weapons=parse_ranged_weapons(root),
         damage_reduction=parse_damage_reduction(root),
         spells=parse_spells(root),
         level=parse_level(root),
@@ -332,5 +258,4 @@ def parse_xml(input_file) -> Character:
         special_attacks=parse_special_attacks(root),
         weapon_proficiencies=parse_weapon_proficiences(root),
     )
-    print(char)
     return char

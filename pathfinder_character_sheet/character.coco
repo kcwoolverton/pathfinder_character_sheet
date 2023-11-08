@@ -1,0 +1,81 @@
+from dataclasses import dataclass
+import xml.etree.ElementTree as ET
+import argparse
+from enum import Enum
+from dataclasses import field
+
+class Stats(Enum):
+    STR = 0
+    DEX = 1
+    CON = 2
+    INT = 3
+    WIS = 4
+    CHA = 5
+
+class Movement(Enum):
+    Walk = 0
+    Climb = 1
+    Swim = 2
+    Fly = 3
+
+class SavingThrows(Enum):
+    fort = 0
+    ref = 1
+    will = 2
+
+@dataclass
+class Spell:
+    name: str = ''
+    times_memorized: int = 0
+    spell_range: str = ''
+    casting_time: str = ''
+    time_units: str = ''
+    dc: int = 0
+    duration: str = ''
+    effect: str = ''
+    target: str = ''
+    save_info: str = ''
+    level: int = 0
+
+@dataclass
+class Character:
+    name: str = ''
+    level: int = 0
+    max_hp: int = 0
+    current_hp: int = 0
+    ac: (int; int; int) = (0, 0, 0)
+    skills: dict[str, int] = field(default_factory=dict)
+    # TODO
+    conditional_skill_modifiers: (str; ...) = ()
+    alignment: str = ''
+    char_classes: (str; ...) = ''
+    archetypes: (str; ...) = ()
+    # TODO: fix vision
+    # vision: dict[str, int] = field(default_factory=dict)
+    movement: (int; int; int; int) = (0, 0, 0, 0)
+    damage_reduction: (str; ...) = ()
+    stats: (int; int; int; int; int; int) = (0, 0, 0, 0, 0, 0)
+    base_attack_bonus: (int; ...) = ()
+    saving_throws: (int; int; int) = (0, 0, 0)
+    # TODO
+    conditional_st_modifiers: (str; ...) = ()
+    melee: (int; ...) = ()
+    ranged: (int; ...) = ()
+    weapons: dict[str, ((int; ...); str; str)] = field(default_factory=dict)
+    ranged_weapons: dict[str, dict[str, ((int; ...); str; str)]] = field(default_factory=dict)
+    cmb: dict[str, int] = ()
+    cmd: dict[str, int] = ()
+    spell_resistance: int = 0
+    languages: (str; ...) = ()
+    gold: int = 0
+    curr_gold: int = 0
+    ac_bonus: int = 0
+    initiative: int = 0
+    resistances: (str; ...) = field(default_factory=dict)
+    immunities: set[str] = field(default_factory=dict)
+    spells: list[Spell] = field(default_factory=list)
+    weapon_proficiencies: str = ''
+    feats: ((str; str); ...) = ()
+    spell_like_abilities: str = ""
+    special_abilities: (str; ...) = ()
+    special_attacks: (str; ) = ()

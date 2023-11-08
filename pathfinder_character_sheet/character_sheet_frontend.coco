@@ -3,26 +3,18 @@ from random import Random
 
 import justpy as jp
 from pathfinder_character_sheet.character_sheet_parser import *
+from pathfinder_character_sheet.character import *
+from pathfinder_character_sheet.utils import *
 
 # Fix vision
-# ranged weapons damage parse
-# Damage reduction
 # Conditional modifiers
+# CMB, CMD
 # HP text box
 # Spell counters (checkboxes)
+# Add ranged attack button
 # Long rest button
 # Make look not bad
 # Readme
-
-def make_mod_text(mods) -> str:
-    output = []
-    for mod in mods:
-        mod_str = str(mod)
-        if int(mod) >= 0:
-            mod_str = "+" + str(mod)
-        output.append(mod_str)
-
-    return "/".join(output)
 
 def make_roll_button(rng, roll_modal, text="", modifier=0, die=20, num_dice=1):
     button = jp.Button(
@@ -63,26 +55,14 @@ def make_cell_div(text):
 def make_row_flex_div():
     return jp.Div(classes="flex w-full p-4 m-4", style="background-color: #f9f9f9;")
 
-def make_col_flex_div():
-    return jp.Div(classes="flex-col w-full p-4 m-4", style="background-color: #f9f9f9;")
+def make_col_flex_div(overflow=False):
+    classes = "flex-col w-full p-4 m-4"
+    if overflow:
+        classes += " overflow-auto overflow-x-auto"
+    return jp.Div(classes=classes, style="background-color: #f9f9f9;")
 
 def make_one_third_col_div():
     return jp.Div(classes="flex flex-col w-1/3 gap-4")
-
-def roll_dice(rng, die_type, num_dice, num_rolls) -> list[int]:
-    rolls = []
-    for _ in range(num_rolls):
-        result = 0
-        for _ in range(num_dice):
-            result += rng.randint(1, die_type)
-        rolls.append(result)
-    return rolls
-
-def make_roll_result_text(rolls: list[int], modifiers: list[int]) -> str:
-    text = []
-    for i in range(len(rolls)):
-        text.append(f"Result: {rolls[i]} + {modifiers[i]} = {rolls[i] + modifiers[i]}")
-    return "<br>".join(text)
 
 def make_title_box(height: str, width: str, title: str):
     box_style = f"background-color: #f9f9f9; border: 1px solid #ccc; shadow-lg; padding: 20px; w-{width}; height: {height}; overflow-y: auto rounded"
@@ -184,30 +164,7 @@ def make_weapons_box(upper_container, char, rng) -> dict[str, ((int; ...); str; 
         table_body.add(table_row)
         weapon_name = make_button_div()
         table_row.add(weapon_name)
-        num_dice, die, modifier = "", "", ""
-        curr_val = ""
-        print(f"{damage=}")
-        for char in damage:
-            if num_dice == "":
-                if char == 'd':
-                    num_dice = curr_val
-                    curr_val = ""
-                else:
-                    curr_val += char
-            elif die == "":
-                if char == '+' or char == '-':
-                    die = curr_val
-                    curr_val = char
-                else:
-                    curr_val += char
-            else:
-                if not char == " ":
-                    curr_val += char
-        if not die:
-            die = curr_val
-            modifier = 0
-        else:
-            modifier = curr_val
+        num_dice, die, modifier = get_attack_info(damage)
         attack_roll_modal = make_roll_modal(upper_container, modifier=[*attack_bonus], rng=rng)
         attack_button = make_roll_button(rng, attack_roll_modal, text=weapon, modifier=[*attack_bonus])
         weapon_name.add(attack_button)
@@ -221,6 +178,40 @@ def make_weapons_box(upper_container, char, rng) -> dict[str, ((int; ...); str; 
         damage_cell.add(damage_button)
         multiplier_cell = make_cell_div(text=multiplier)
         table_row.add(multiplier_cell)
+
+    return weapons_row
+
+def make_ranged_weapons_box(upper_container, char, rng):
+    weapons_row = make_col_flex_div(overflow=True)
+    for weapon_name, weapon_info in char.ranged_weapons.items():
+        headers = [weapon_name]
+        attack_bonus = [""]
+        damage = [""]
+        crit = [""]
+
+        for distance, (curr_attack_bonus, curr_damage, curr_crit) in weapon_info.items():
+            headers.append(distance)
+            attack_bonus.append(curr_attack_bonus)
+            damage.append(curr_damage)
+            crit.append(curr_crit)
+
+        table, table_body = make_table(headers)
+        weapons_row.add(table)
+        attack_bonus_row = jp.Tr()
+        damage_row = jp.Tr()
+        table_body.add(attack_bonus_row, damage_row)
+
+        for i in range(len(headers)):
+            attack_bonus_cell = make_cell_div(text=make_mod_text(attack_bonus[i]))
+            attack_bonus_row.add(attack_bonus_cell)
+            damage_cell = make_button_div()
+            damage_row.add(damage_cell)
+            if damage[i]:
+                modifier, die_type, num_dice = get_attack_info(damage[i])
+                damage_roll_modal = make_roll_modal(upper_container, modifier=[int(modifier)], die=int(die_type), num_dice=int(num_dice), rng=rng)
+                damage_button = make_roll_button(
+                    rng, damage_roll_modal, text=damage[i], modifier=[int(modifier)], die=int(die_type), num_dice=int(num_dice))
+                damage_cell.add(damage_button)
 
     return weapons_row
 
@@ -383,13 +374,56 @@ def make_proficiencies_box(char):
 
     return prof_row
 
+def make_cmb_and_cmd_box(upper_container, char, rng):
+    cm_row = make_col_flex_div(overflow=True)
+    headers = [""]
+    cmb = ["CMB"]
+    cmd = ["CMD"]
+
+    for cmb_name, value in char.cmb.items():
+        table_header = cmb_name.split("_")[0]
+        cmd_name = table_header + "_defense"
+        headers.append(table_header)
+        cmb.append(value)
+        cmd.append(char.cmd[cmd_name])
+
+    print(f"{headers=}, {cmb=}, {cmd=}")
+
+    table, table_body = make_table(headers)
+    cm_row.add(table)
+    cmb_row = jp.Tr()
+    cmd_row = jp.Tr()
+    table_body.add(cmb_row, cmd_row)
+
+    for i in range(len(headers)):
+        cmd_cell = make_cell_div(text=cmd[i])
+        cmd_row.add(cmd_cell)
+        if i != 0:
+            cmb_cell = make_button_div()
+            cmb_row.add(cmb_cell)
+            cmb_roll_modal = make_roll_modal(upper_container, modifier=[int(cmb[i])], rng=rng)
+            cmb_button = make_roll_button(
+                rng, cmb_roll_modal, text=cmb[i], modifier=[int(cmb[i])])
+            cmb_cell.add(cmb_button)
+        else:
+            cmb_cell = make_cell_div(text=cmb[i])
+            cmb_row.add(cmb_cell)
+
+    return cm_row
+
 def make_large_row(upper_container, char, rng):
     main_row = make_row_flex_div()
+
+    cm_box = make_cmb_and_cmd_box(upper_container, char, rng)
 
     left_col = make_one_third_col_div()
     abilities_box = make_abilities_box(upper_container, char, rng)
     weapons_box = make_weapons_box(upper_container, char, rng)
     left_col.add(abilities_box, weapons_box)
+    if char.ranged_weapons:
+        left_col.add(make_ranged_weapons_box(upper_container, char, rng))
+    if char.spells:
+        left_col.add(cm_box)
     if char.special_attacks:
         left_col.add(make_special_attacks_box(char))
     if char.special_abilities:
@@ -402,6 +436,9 @@ def make_large_row(upper_container, char, rng):
     spell_like_abilities_box = make_spell_like_abilities_box(char)
     spells_box = make_spells_box(char)
     middle_col.add(saves_box)
+
+    if not char.spells:
+        middle_col.add(cm_box)
 
     if char.spell_like_abilities:
         middle_col.add(spell_like_abilities_box)
@@ -428,7 +465,7 @@ def make_roll_modal(upper_container, rng, modifier=0, die=20, num_dice=1):
 
     modal_content = jp.Div(classes="bg-white rounded shadow-lg w-1/3 p-8 m-4 relative")
     modal_backdrop.add(modal_content)
-    modal_title = jp.H1(text=f"Roll", classes="text-xl font-bold mb-4")
+    modal_title = jp.H1(text="Roll", classes="text-xl font-bold mb-4")
     modal_content.add(modal_title)
     rolls = roll_dice(rng, die_type=int(die), num_dice=int(num_dice), num_rolls=len(modifier))
     modal_text = jp.P(text=make_roll_result_text(rolls, modifier), classes="mb-4")
