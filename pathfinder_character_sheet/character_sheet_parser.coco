@@ -139,7 +139,7 @@ def parse_ranged_weapons(root: ET.Element) -> dict[str, dict[str, ((int; ...); s
             attack_bonus = tuple(map(int, distance.find('to_hit').text.split('/')))
             critical = weapon.find('common/critical/range').text + '/' + weapon.find('common/critical/multiplier').text
             ranges[distance.find('distance').text] = (attack_bonus=attack_bonus, damage=damage, crit=critical)
-        weapons[weapon.find('common/name/long').text] = ranges
+        weapons[weapon.find('common/name/long').text.removeprefix('*')] = ranges
     return weapons
 
 def parse_special_attacks(root: ET.Element) -> ((str; str); ...):

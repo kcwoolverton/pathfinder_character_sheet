@@ -4,7 +4,6 @@ def get_stat_modifier(stat_value):
 def make_mod_text(mods) -> str:
     output = []
     for mod in mods:
-        print(f'{mod=}')
         mod_str = str(mod)
         if int(mod) >= 0:
             mod_str = "+" + str(mod)

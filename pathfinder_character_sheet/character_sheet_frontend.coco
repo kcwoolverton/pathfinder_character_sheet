@@ -8,7 +8,6 @@ from pathfinder_character_sheet.utils import *
 
 # Fix vision
 # Conditional modifiers
-# CMB, CMD
 # HP text box
 # Spell counters (checkboxes)
 # Add ranged attack button
@@ -207,7 +206,8 @@ def make_ranged_weapons_box(upper_container, char, rng):
             damage_cell = make_button_div()
             damage_row.add(damage_cell)
             if damage[i]:
-                modifier, die_type, num_dice = get_attack_info(damage[i])
+                num_dice, die_type, modifier = get_attack_info(damage[i])
+                print(f'{modifier=}, {die_type=}, {num_dice=}')
                 damage_roll_modal = make_roll_modal(upper_container, modifier=[int(modifier)], die=int(die_type), num_dice=int(num_dice), rng=rng)
                 damage_button = make_roll_button(
                     rng, damage_roll_modal, text=damage[i], modifier=[int(modifier)], die=int(die_type), num_dice=int(num_dice))
@@ -387,8 +387,6 @@ def make_cmb_and_cmd_box(upper_container, char, rng):
         cmb.append(value)
         cmd.append(char.cmd[cmd_name])
 
-    print(f"{headers=}, {cmb=}, {cmd=}")
-
     table, table_body = make_table(headers)
     cm_row.add(table)
     cmb_row = jp.Tr()
@@ -403,7 +401,7 @@ def make_cmb_and_cmd_box(upper_container, char, rng):
             cmb_row.add(cmb_cell)
             cmb_roll_modal = make_roll_modal(upper_container, modifier=[int(cmb[i])], rng=rng)
             cmb_button = make_roll_button(
-                rng, cmb_roll_modal, text=cmb[i], modifier=[int(cmb[i])])
+                rng, cmb_roll_modal, text=make_mod_text([cmb[i]]), modifier=[int(cmb[i])])
             cmb_cell.add(cmb_button)
         else:
             cmb_cell = make_cell_div(text=cmb[i])
