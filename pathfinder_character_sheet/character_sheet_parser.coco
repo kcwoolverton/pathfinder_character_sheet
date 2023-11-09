@@ -148,6 +148,14 @@ def parse_special_attacks(root: ET.Element) -> ((str; str); ...):
         attacks.append((name=attack.find('name').text, description=attack.find('description').text))
     return tuple(attacks)
 
+def parse_conditional_st_modifier(root: ET.Element) -> (str; ...):
+    modifiers = []
+    for modifier in root.findall('saving_throws/conditional_modifiers'):
+        if modifier:
+            for description in modifier.findall('savebonus/description'):
+                modifiers.append(description.text)
+    return tuple(modifiers)
+
 def create_spell_from_node(spell_node: ET.Element, **kwargs) -> Spell:
     return Spell(
             name=spell_node.find("name").text,
@@ -257,5 +265,6 @@ def parse_xml(input_file) -> Character:
         special_abilities=special_qualities,
         special_attacks=parse_special_attacks(root),
         weapon_proficiencies=parse_weapon_proficiences(root),
+        conditional_st_modifiers=parse_conditional_st_modifier(root),
     )
     return char

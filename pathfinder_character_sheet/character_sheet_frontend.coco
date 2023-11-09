@@ -8,10 +8,6 @@ from pathfinder_character_sheet.utils import *
 
 # Fix vision
 # Conditional modifiers
-# HP text box
-# Spell counters (checkboxes)
-# Add ranged attack button
-# Long rest button
 # Make look not bad
 # Readme
 
@@ -63,6 +59,30 @@ def make_col_flex_div(overflow=False):
 def make_one_third_col_div():
     return jp.Div(classes="flex flex-col w-1/3 gap-4")
 
+def make_reset_button(char):
+    button = jp.Button(
+        text="Long Rest",
+        classes='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded',
+    )
+    button.checkboxes = []
+    button.on('click', long_rest_click$(char=char))
+    return button
+
+def long_rest_click(self, msg, char):
+    for checkbox in self.checkboxes:
+        checkbox.checked = False
+    self.hp_input.value = f"{char.max_hp}"
+
+def make_checkbox_cell(reset_button, num_checkboxes):
+    checkbox_div = make_row_flex_div()
+    if num_checkboxes == "At Will":
+        return checkbox_div, None
+    for i in range(int(num_checkboxes)):
+        checkbox = jp.Input(type="checkbox", classes="bg-blue-500 m-2 p-2", checked=False)
+        reset_button.checkboxes.append(checkbox)
+        checkbox_div.add(checkbox)
+    return checkbox_div, reset_button
+
 def make_title_box(height: str, width: str, title: str):
     box_style = f"background-color: #f9f9f9; border: 1px solid #ccc; shadow-lg; padding: 20px; w-{width}; height: {height}; overflow-y: auto rounded"
     box = jp.Div(classes="border border-gray-300 shadow-lg p-4 rounded-md m-4 flex items-center justify-center", style=box_style)
@@ -70,7 +90,7 @@ def make_title_box(height: str, width: str, title: str):
     box.add(title)
     return box
 
-def make_title_row(char):
+def make_title_row(char, reset_button):
     title_row = make_row_flex_div()
     name_box = make_title_box("50px", "1/8", char.name)
     class_str = f"{', '.join(char.char_classes)}"
@@ -79,6 +99,9 @@ def make_title_row(char):
     class_box = make_title_box("50px", "1/4", class_str)
     level_box = make_title_box("50px", "1/8", "Level " + str(char.level))
     title_row.add(name_box, class_box, level_box)
+    button_div = make_button_div()
+    button_div.add(reset_button)
+    title_row.add(button_div)
     return title_row
 
 def make_ac_cell(char):
@@ -97,7 +120,7 @@ def make_ac_cell(char):
 
     return ac_cell
 
-def make_useful_info_row(upper_container, char, rng):
+def make_useful_info_row(upper_container, reset_button, char, rng):
     useful_info_row = make_col_flex_div()
 
     headers = ["Hit Points", "Initiative", "Armor Class"]
@@ -110,7 +133,13 @@ def make_useful_info_row(upper_container, char, rng):
     table, table_body = make_table(headers)
     useful_info_row.add(table)
 
-    hit_points_data = make_cell_div(text=char.max_hp)
+    hit_points_data = jp.Input(
+        type='number',
+        classes="border border-gray-300 shadow-lg p-4 rounded-md m-4 focus:outline-none focus:bg-white focus:border-purple-500",
+        min=f"-{char.max_hp}",
+        value=f"{char.max_hp}",
+    )
+    reset_button.hp_input = hit_points_data
     initiative_data = make_button_div()
     roll_modal = make_roll_modal(upper_container, modifier=[char.initiative], rng=rng)
     roll_button = make_roll_button(rng, roll_modal, text=make_mod_text([char.initiative]), modifier=[char.initiative])
@@ -201,17 +230,27 @@ def make_ranged_weapons_box(upper_container, char, rng):
         table_body.add(attack_bonus_row, damage_row)
 
         for i in range(len(headers)):
-            attack_bonus_cell = make_cell_div(text=make_mod_text(attack_bonus[i]))
-            attack_bonus_row.add(attack_bonus_cell)
-            damage_cell = make_button_div()
-            damage_row.add(damage_cell)
-            if damage[i]:
+            if i > 0:
+                attack_bonus_cell = make_button_div()
+                attack_bonus_row.add(attack_bonus_cell)
+                attack_bonus_modal = make_roll_modal(upper_container, modifier=attack_bonus[i], rng=rng)
+                attack_bonus_button = make_roll_button(
+                    rng, attack_bonus_modal, text=make_mod_text(attack_bonus[i]), modifier=attack_bonus[i])
+                attack_bonus_cell.add(attack_bonus_button)
+
+                damage_cell = make_button_div()
+                damage_row.add(damage_cell)
                 num_dice, die_type, modifier = get_attack_info(damage[i])
-                print(f'{modifier=}, {die_type=}, {num_dice=}')
-                damage_roll_modal = make_roll_modal(upper_container, modifier=[int(modifier)], die=int(die_type), num_dice=int(num_dice), rng=rng)
+                damage_roll_modal = make_roll_modal(
+                    upper_container, modifier=[int(modifier)], die=int(die_type), num_dice=int(num_dice), rng=rng)
                 damage_button = make_roll_button(
                     rng, damage_roll_modal, text=damage[i], modifier=[int(modifier)], die=int(die_type), num_dice=int(num_dice))
                 damage_cell.add(damage_button)
+            else:
+                attack_bonus_cell = make_cell_div(text="")
+                attack_bonus_row.add(attack_bonus_cell)
+                damage_cell = make_cell_div(text="")
+                damage_row.add(damage_cell)
 
     return weapons_row
 
@@ -259,6 +298,12 @@ def make_saves_box(upper_container, char, rng):
         throw_name.add(button)
         total = make_cell_div(text=make_mod_text([char.saving_throws[throw.value]]))
         table_row.add(total)
+    if char.conditional_st_modifiers:
+        table_row = jp.Tr()
+        table_body.add(table_row)
+        print(char.conditional_st_modifiers)
+        conditional_modifier_row = make_cell_div(text="<br>".join(char.conditional_st_modifiers))
+        table_row.add(conditional_modifier_row)
     return save_row
 
 def make_lang_box(char):
@@ -298,21 +343,28 @@ def make_collapsible_comp(upper_container, button_name="", inner_text=""):
 
     return content
 
-def make_spells_box(char):
+def make_spells_box(reset_button, char):
     spells_row = make_col_flex_div()
-    table, table_body = make_table(["Spell", "Level"])
+    table, table_body = make_table(["Spell", "Casts", "Level"])
 
     spells_row.add(table)
-
+    button = reset_button
     for spell in char.spells:
         table_row = jp.Tr()
         table_body.add(table_row)
         spell_cell = make_button_div()
         spell_cell.add(make_collapsible_comp(spell_cell, spell.name, make_spell_text(spell)))
         table_row.add(spell_cell)
+        num_checkboxes = spell.times_memorized
+        if spell.level == "0":
+            num_checkboxes = 0
+        checkboxes, interim_button = make_checkbox_cell(reset_button, num_checkboxes=num_checkboxes)
+        if interim_button:
+            button = interim_button
+        table_row.add(checkboxes)
         table_row.add(make_cell_div(text=spell.level))
 
-    return spells_row
+    return spells_row, button
 
 def make_spell_like_abilities_box(char):
     spell_like_abilities_row = make_col_flex_div()
@@ -409,7 +461,7 @@ def make_cmb_and_cmd_box(upper_container, char, rng):
 
     return cm_row
 
-def make_large_row(upper_container, char, rng):
+def make_large_row(upper_container, reset_button, char, rng):
     main_row = make_row_flex_div()
 
     cm_box = make_cmb_and_cmd_box(upper_container, char, rng)
@@ -432,7 +484,7 @@ def make_large_row(upper_container, char, rng):
     middle_col = make_one_third_col_div()
     saves_box = make_saves_box(upper_container, char, rng)
     spell_like_abilities_box = make_spell_like_abilities_box(char)
-    spells_box = make_spells_box(char)
+    spells_box, button = make_spells_box(reset_button, char)
     middle_col.add(saves_box)
 
     if not char.spells:
@@ -448,7 +500,7 @@ def make_large_row(upper_container, char, rng):
     right_col.add(make_skills_box(upper_container, char, rng), make_lang_box(char), make_proficiencies_box(char))
 
     main_row.add(left_col, middle_col, right_col)
-    return main_row
+    return main_row, button
 
 def toggle_roll_modal(self, msg, rng, die=20, num_dice=1, modifier=0):
     if not self.roll_modal.show:

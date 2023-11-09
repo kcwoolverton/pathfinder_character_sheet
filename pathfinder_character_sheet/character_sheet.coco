@@ -9,10 +9,12 @@ parser = argparse.ArgumentParser(description='Process some integers.')
 parser.add_argument('input_file', type=str, help='The xml file for your character.')
 
 def server(char):
-    wp = jp.WebPage()
+    wp = jp.WebPage(data={'checked': False, 'hp': char.max_hp})
     main_div = jp.Div(classes="w-full h-screen p-4", style="background-color: #f9f9f9;", a=wp)
     rng = Random()
-    main_div.add(make_title_row(char), make_useful_info_row(wp, char, rng), make_large_row(wp, char, rng))
+    large_row, button = make_large_row(wp, make_reset_button(char), char, rng)
+    title_row = make_title_row(char, button)
+    main_div.add(title_row, make_useful_info_row(wp, button, char, rng), large_row)
     return wp
 
 if __name__ == "__main__":
