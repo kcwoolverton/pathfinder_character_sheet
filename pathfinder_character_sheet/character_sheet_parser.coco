@@ -157,12 +157,19 @@ def parse_conditional_st_modifier(root: ET.Element) -> (str; ...):
     return tuple(modifiers)
 
 def create_spell_from_node(spell_node: ET.Element, **kwargs) -> Spell:
+    effect_text = ""
+    if spell_node.findall('effect/para'):
+        for para in spell_node.findall('effect/para'):
+            effect_text += para.text + "<br><br>"
+        effect_text.removesuffix("<br><br>")
+    else:
+        effect_text = spell_node.find('effect').text
     return Spell(
             name=spell_node.find("name").text,
             times_memorized=spell_node.find("times_memorized").text,
             spell_range=spell_node.find("range").text,
             casting_time=spell_node.find("castingtime").text,
-            effect=spell_node.find("effect").text,
+            effect=effect_text,
             time_units=spell_node.find("times_unit").text,
             dc=spell_node.find("dc").text,
             target=spell_node.find("target").text,
@@ -191,7 +198,12 @@ def parse_feats(root: ET.Element) -> ((str; str); ...):
             if feat.find('benefit').text:
                 benefit = feat.find('benefit').text
             else:
-                benefit = feat.find('description').text
+                if feat.findall('description/para'):
+                    for para in feat.findall('description/para'):
+                        benefit += para.text + "<br><br>"
+                    benefit.removesuffix("<br><br>")
+                else:
+                    benefit = feat.find('description').text
             feats.append((feat_name=feat.find('name').text, feat_benefit=benefit))
     return tuple(feats)
 
@@ -221,7 +233,14 @@ def parse_special_qualities(root: ET.Element) -> (str; set(str); (str; str)):
         elif 'Spell-Like Abilities' in name:
             spell_like_abilities = quality.find('description').text
         else:
-            special_qualities.append((name=name, description=quality.find('description').text))
+            text = ""
+            if quality.findall('description/para'):
+                for para in quality.findall('description/para'):
+                    text += para.text + "<br><br>"
+                text.removesuffix("<br><br>")
+            else:
+                text = quality.find('description').text
+            special_qualities.append((name=name, description=text))
     return spell_like_abilities, immunities, special_qualities
 
 def parse_weapon_proficiences(root: ET.Element) -> str:
