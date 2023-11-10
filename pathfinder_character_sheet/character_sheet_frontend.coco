@@ -44,16 +44,6 @@ def make_row_flex_div():
 def make_one_third_col_div():
     return jp.Div(classes=one_third_col_classes)
 
-def make_reset_button(char):
-    button = jp.Button(
-        text="Long Rest",
-        classes=reset_button_classes,
-        style=reset_button_style,
-    )
-    button.checkboxes = []
-    button.on('click', long_rest_click$(char=char))
-    return button
-
 def long_rest_click(self, msg, char):
     print("LONG REST")
     for checkbox in self.checkboxes:
@@ -485,6 +475,8 @@ def make_large_row(upper_container, reset_button, char, rng):
 
     cm_box = make_cmb_and_cmd_box(upper_container, char, rng)
 
+    special_qualities_box = make_special_qualities_box(char)
+
     left_col = make_one_third_col_div()
     abilities_box = make_abilities_box(upper_container, char, rng)
     weapons_box = make_weapons_box(upper_container, char, rng)
@@ -495,8 +487,8 @@ def make_large_row(upper_container, reset_button, char, rng):
         left_col.add(cm_box)
     if char.special_attacks:
         left_col.add(make_special_attacks_box(char))
-    if char.special_abilities:
-        left_col.add(make_special_qualities_box(char))
+    if char.special_abilities and char.spells:
+        left_col.add(special_qualities_box)
     left_col.add(make_feats_box(char))
 
     # saves, langs, proficiencies, spells
@@ -514,6 +506,9 @@ def make_large_row(upper_container, reset_button, char, rng):
 
     if char.spells:
         middle_col.add(spells_box)
+
+    if not char.spells and char.special_abilities:
+        middle_col.add(special_qualities_box)
 
     right_col = make_one_third_col_div()
     right_col.add(make_skills_box(upper_container, char, rng), make_lang_box(char), make_proficiencies_box(char))

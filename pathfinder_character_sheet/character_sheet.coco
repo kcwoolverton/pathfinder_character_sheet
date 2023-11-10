@@ -4,13 +4,14 @@ from random import Random
 import justpy as jp
 from pathfinder_character_sheet.character_sheet_frontend import *
 from pathfinder_character_sheet.character_sheet_parser import *
+from pathfinder_character_sheet.styles import *
 
 parser = argparse.ArgumentParser(description='Process some integers.')
 parser.add_argument('input_file', type=str, help='The xml file for your character.')
 
 def server(char):
     wp = jp.WebPage(data={'checked': False, 'hp': char.max_hp})
-    main_div = jp.Div(classes="w-full h-screen p-4", style="background-color: #f9f9f9;", a=wp)
+    main_div = jp.Div(classes="w-full h-screen p-4", style=f"background-color: {background_color}", a=wp)
     rng = Random()
     large_row, button = make_large_row(
         wp,
