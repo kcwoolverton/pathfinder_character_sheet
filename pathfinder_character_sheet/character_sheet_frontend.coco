@@ -11,15 +11,6 @@ from pathfinder_character_sheet.styles import *
 # Make look not bad
 # Readme
 
-def make_roll_button(rng, roll_modal, text="", modifier=0, die=20, num_dice=1):
-    button = jp.Button(
-        text=text,
-        classes=roll_button_classes,
-        click=toggle_roll_modal$(rng=rng, modifier=modifier, die=die, num_dice=num_dice)
-    )
-    button.roll_modal = roll_modal
-    return button
-
 def make_table(headers, classes=table_classes):
     table = jp.Table(classes=classes, style=table_style)
 
@@ -57,6 +48,7 @@ def make_reset_button(char):
     button = jp.Button(
         text="Long Rest",
         classes=reset_button_classes,
+        style=reset_button_style,
     )
     button.checkboxes = []
     button.on('click', long_rest_click$(char=char))
@@ -120,6 +112,7 @@ def make_useful_info_row(upper_container, reset_button, char, rng):
     hit_points_data = jp.Input(
         type='number',
         classes=hit_points_classes,
+        style=hit_points_style,
         min=f"-{char.max_hp}",
         value=f"{char.max_hp}",
     )
@@ -291,8 +284,8 @@ def make_roll_cell(rng, roll_modal, click, text=""):
 def make_collapsible_button_cell(click, text=""):
     cell = jp.Td(
         text=text,
-        classes=roll_cell_classes,
-        style=roll_cell_style,
+        classes=collapse_button_classes,
+        style=collapse_button_style,
         click=click,
     )
     return cell

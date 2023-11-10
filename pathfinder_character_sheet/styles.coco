@@ -1,6 +1,9 @@
 import justpy as jp
 
-roll_button_classes = "bg-blue-500 hover:bg-blue-700 text-white w-full h-full"
+background_color = "#f7f5e6"
+button_color = ""
+header_color = ""
+text_color = ""
 
 table_classes = "min-w-full bg-white border rounded shadow"
 table_style = "transform: scale(1.0)"
@@ -16,6 +19,7 @@ flex_row_style = "background-color: #f9f9f9;"
 one_third_col_classes = "flex flex-col w-1/3 gap-4"
 
 reset_button_classes = "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+reset_button_style = ""
 
 checkbox_div_classes = "flex w-full p-4 m-4"
 checkbox_div_style = "background-color: transparent;"
@@ -23,8 +27,10 @@ checkbox_classes = "bg-blue-500 m-2 p-2"
 checkbox_style = "transform: scale(1.0);"
 
 hit_points_classes = "border border-gray-300 shadow-lg p-4 rounded-md m-4 focus:outline-none focus:bg-white focus:border-purple-500"
+hit_points_style = ""
 
 collapse_button_classes = 'bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4'
+collapse_button_style = ""
 
 roll_cell_style = ""
 roll_cell_classes = "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 text-center"
