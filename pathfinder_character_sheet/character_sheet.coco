@@ -8,6 +8,7 @@ from pathfinder_character_sheet.styles import *
 
 parser = argparse.ArgumentParser(description='Process some integers.')
 parser.add_argument('input_file', type=str, help='The xml file for your character.')
+parser.add_argument('--port', type=int)
 
 def server(char):
     wp = jp.WebPage(data={'checked': False, 'hp': char.max_hp})
@@ -32,4 +33,7 @@ if __name__ == "__main__":
     char: Character = parse_xml(file_to_read)
     def server_partial():
         return server(char)
-    jp.justpy(server_partial)
+    port = 8080
+    if args.port:
+        port = args.port
+    jp.justpy(server_partial, port=port)

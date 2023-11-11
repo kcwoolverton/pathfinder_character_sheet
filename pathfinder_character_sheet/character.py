@@ -1,0 +1,138 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# __coconut_hash__ = 0xcd0b09db
+
+# Compiled with Coconut version 3.0.3
+
+# Coconut Header: -------------------------------------------------------------
+
+from __future__ import generator_stop, annotations
+import sys as _coconut_sys
+import os as _coconut_os
+_coconut_header_info = ('3.0.3', '310', False)
+_coconut_cached__coconut__ = _coconut_sys.modules.get('__coconut__')
+_coconut_file_dir = _coconut_os.path.dirname(_coconut_os.path.abspath(__file__))
+_coconut_pop_path = False
+if _coconut_cached__coconut__ is None or getattr(_coconut_cached__coconut__, "_coconut_header_info", None) != _coconut_header_info and _coconut_os.path.dirname(_coconut_cached__coconut__.__file__ or "") != _coconut_file_dir:
+    if _coconut_cached__coconut__ is not None:
+        _coconut_sys.modules['_coconut_cached__coconut__'] = _coconut_cached__coconut__
+        del _coconut_sys.modules['__coconut__']
+    _coconut_sys.path.insert(0, _coconut_file_dir)
+    _coconut_pop_path = True
+    _coconut_module_name = _coconut_os.path.splitext(_coconut_os.path.basename(_coconut_file_dir))[0]
+    if _coconut_module_name and _coconut_module_name[0].isalpha() and all(c.isalpha() or c.isdigit() for c in _coconut_module_name) and "__init__.py" in _coconut_os.listdir(_coconut_file_dir):
+        _coconut_full_module_name = str(_coconut_module_name + ".__coconut__")
+        import __coconut__ as _coconut__coconut__
+        _coconut__coconut__.__name__ = _coconut_full_module_name
+        for _coconut_v in vars(_coconut__coconut__).values():
+            if getattr(_coconut_v, "__module__", None) == '__coconut__':
+                try:
+                    _coconut_v.__module__ = _coconut_full_module_name
+                except AttributeError:
+                    _coconut_v_type = type(_coconut_v)
+                    if getattr(_coconut_v_type, "__module__", None) == '__coconut__':
+                        _coconut_v_type.__module__ = _coconut_full_module_name
+        _coconut_sys.modules[_coconut_full_module_name] = _coconut__coconut__
+from __coconut__ import *
+from __coconut__ import _coconut_tail_call, _coconut_tco, _namedtuple_of, _coconut, _coconut_Expected, _coconut_MatchError, _coconut_SupportsAdd, _coconut_SupportsMinus, _coconut_SupportsMul, _coconut_SupportsPow, _coconut_SupportsTruediv, _coconut_SupportsFloordiv, _coconut_SupportsMod, _coconut_SupportsAnd, _coconut_SupportsXor, _coconut_SupportsOr, _coconut_SupportsLshift, _coconut_SupportsRshift, _coconut_SupportsMatmul, _coconut_SupportsInv, _coconut_iter_getitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_raise, _coconut_mark_as_match, _coconut_reiterable, _coconut_self_match_types, _coconut_dict_merge, _coconut_exec, _coconut_comma_op, _coconut_multi_dim_arr, _coconut_mk_anon_namedtuple, _coconut_matmul, _coconut_py_str, _coconut_flatten, _coconut_multiset, _coconut_back_none_pipe, _coconut_back_none_star_pipe, _coconut_back_none_dubstar_pipe, _coconut_forward_none_compose, _coconut_back_none_compose, _coconut_forward_none_star_compose, _coconut_back_none_star_compose, _coconut_forward_none_dubstar_compose, _coconut_back_none_dubstar_compose, _coconut_call_or_coefficient, _coconut_in, _coconut_not_in
+if _coconut_pop_path:
+    _coconut_sys.path.pop(0)
+try:
+    __file__ = _coconut_os.path.abspath(__file__) if __file__ else __file__
+except NameError:
+    pass
+else:
+    if __file__ and '__coconut_cache__' in __file__:
+        _coconut_file_comps = []
+        while __file__:
+            __file__, _coconut_file_comp = _coconut_os.path.split(__file__)
+            if not _coconut_file_comp:
+                _coconut_file_comps.append(__file__)
+                break
+            if _coconut_file_comp != '__coconut_cache__':
+                _coconut_file_comps.append(_coconut_file_comp)
+        __file__ = _coconut_os.path.join(*reversed(_coconut_file_comps))
+
+# Compiled Coconut: -----------------------------------------------------------
+
+from dataclasses import dataclass  #1 (line in Coconut source)
+import xml.etree.ElementTree as ET  #2 (line in Coconut source)
+import argparse  #3 (line in Coconut source)
+from enum import Enum  #4 (line in Coconut source)
+from dataclasses import field  #5 (line in Coconut source)
+
+class Stats(Enum):  #7 (line in Coconut source)
+    STR = 0  #8 (line in Coconut source)
+    DEX = 1  #9 (line in Coconut source)
+    CON = 2  #10 (line in Coconut source)
+    INT = 3  #11 (line in Coconut source)
+    WIS = 4  #12 (line in Coconut source)
+    CHA = 5  #13 (line in Coconut source)
+
+class Movement(Enum):  #15 (line in Coconut source)
+    Walk = 0  #16 (line in Coconut source)
+    Climb = 1  #17 (line in Coconut source)
+    Swim = 2  #18 (line in Coconut source)
+    Fly = 3  #19 (line in Coconut source)
+
+class SavingThrows(Enum):  #21 (line in Coconut source)
+    fort = 0  #22 (line in Coconut source)
+    ref = 1  #23 (line in Coconut source)
+    will = 2  #24 (line in Coconut source)
+
+@dataclass  #26 (line in Coconut source)
+class Spell():  #27 (line in Coconut source)
+    name: str = ''  #28 (line in Coconut source)
+    times_memorized: int = 0  #29 (line in Coconut source)
+    spell_range: str = ''  #30 (line in Coconut source)
+    casting_time: str = ''  #31 (line in Coconut source)
+    time_units: str = ''  #32 (line in Coconut source)
+    dc: int = 0  #33 (line in Coconut source)
+    duration: str = ''  #34 (line in Coconut source)
+    effect: str = ''  #35 (line in Coconut source)
+    target: str = ''  #36 (line in Coconut source)
+    save_info: str = ''  #37 (line in Coconut source)
+    level: int = 0  #38 (line in Coconut source)
+
+@dataclass  #40 (line in Coconut source)
+class Character():  #41 (line in Coconut source)
+    name: str = ''  #42 (line in Coconut source)
+    level: int = 0  #43 (line in Coconut source)
+    max_hp: int = 0  #44 (line in Coconut source)
+    current_hp: int = 0  #45 (line in Coconut source)
+    ac: _coconut.typing.Tuple[int, int, int] = (0, 0, 0)  #46 (line in Coconut source)
+    skills: dict[str, int] = field(default_factory=dict)  #47 (line in Coconut source)
+# TODO
+    conditional_skill_modifiers: _coconut.typing.Tuple[str, ...] = ()  #49 (line in Coconut source)
+    alignment: str = ''  #50 (line in Coconut source)
+    char_classes: _coconut.typing.Tuple[str, ...] = ''  #51 (line in Coconut source)
+    archetypes: _coconut.typing.Tuple[str, ...] = ()  #52 (line in Coconut source)
+# TODO: fix vision
+# vision: dict[str, int] = field(default_factory=dict)
+    movement: _coconut.typing.Tuple[int, int, int, int] = (0, 0, 0, 0)  #55 (line in Coconut source)
+    damage_reduction: _coconut.typing.Tuple[str, ...] = ()  #56 (line in Coconut source)
+    stats: _coconut.typing.Tuple[int, int, int, int, int, int] = (0, 0, 0, 0, 0, 0)  #57 (line in Coconut source)
+    base_attack_bonus: _coconut.typing.Tuple[int, ...] = ()  #58 (line in Coconut source)
+    saving_throws: _coconut.typing.Tuple[int, int, int] = (0, 0, 0)  #59 (line in Coconut source)
+# TODO
+    conditional_st_modifiers: _coconut.typing.Tuple[str, ...] = ()  #61 (line in Coconut source)
+    melee: _coconut.typing.Tuple[int, ...] = ()  #62 (line in Coconut source)
+    ranged: _coconut.typing.Tuple[int, ...] = ()  #63 (line in Coconut source)
+    weapons: dict[str, _coconut.typing.Tuple[_coconut.typing.Tuple[int, ...], str, str]] = field(default_factory=dict)  #64 (line in Coconut source)
+    ranged_weapons: dict[str, dict[str, _coconut.typing.Tuple[_coconut.typing.Tuple[int, ...], str, str]]] = field(default_factory=dict)  #65 (line in Coconut source)
+    cmb: dict[str, int] = ()  #66 (line in Coconut source)
+    cmd: dict[str, int] = ()  #67 (line in Coconut source)
+    spell_resistance: int = 0  #68 (line in Coconut source)
+    languages: _coconut.typing.Tuple[str, ...] = ()  #69 (line in Coconut source)
+    gold: int = 0  #70 (line in Coconut source)
+    curr_gold: int = 0  #71 (line in Coconut source)
+    ac_bonus: int = 0  #72 (line in Coconut source)
+    initiative: int = 0  #73 (line in Coconut source)
+    resistances: _coconut.typing.Tuple[str, ...] = field(default_factory=dict)  #74 (line in Coconut source)
+    immunities: set[str] = field(default_factory=dict)  #75 (line in Coconut source)
+    spells: list[Spell] = field(default_factory=list)  #76 (line in Coconut source)
+    weapon_proficiencies: str = ''  #77 (line in Coconut source)
+    feats: _coconut.typing.Tuple[_coconut.typing.Tuple[str, str], ...] = ()  #78 (line in Coconut source)
+    spell_like_abilities: str = ""  #79 (line in Coconut source)
+    special_abilities: _coconut.typing.Tuple[str, ...] = ()  #80 (line in Coconut source)
+    special_attacks: _coconut.typing.Tuple[str,] = ()  #81 (line in Coconut source)
