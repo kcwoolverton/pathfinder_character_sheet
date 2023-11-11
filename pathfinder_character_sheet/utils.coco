@@ -23,7 +23,12 @@ def roll_dice(rng, die_type, num_dice, num_rolls) -> list[int]:
 def make_roll_result_text(rolls: list[int], modifiers: list[int]) -> str:
     text = []
     for i in range(len(rolls)):
-        text.append(f"Result: {rolls[i]} + {modifiers[i]} = {rolls[i] + modifiers[i]}")
+        roll_result = rolls[i]
+        if roll_result == 20:
+            roll_result = f'<span class="text-blue-500">&#9734;{roll_result}&#9734;</span>'
+        elif roll_result == 1:
+            roll_result = f'<span class="text-red-400">&#9785;{roll_result}&#9785;</span>'
+        text.append(f"Result: {roll_result} + {modifiers[i]} = {rolls[i] + modifiers[i]}")
     return "<br>".join(text)
 
 def get_attack_info(attack_info_str: str) -> (str; str; int):

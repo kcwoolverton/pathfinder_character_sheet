@@ -11,11 +11,7 @@ def parse_hp(root: ET.Element) -> int:
     return int(root.find('hit_points/points').text)
 
 def parse_damage_reduction(root: ET.Element) -> (str; ...):
-    dr_list = []
-    for dr in root.findall('hit_points/damage_reduction'):
-        dr_list.append(dr.text)
-    dr_list = [x for x in dr_list if x]
-    return tuple(dr_list)
+    return tuple(x.text for x in root.findall('hit_points/damage_reduction') if x.text)
 
 def parse_ac(root: ET.Element) -> (int; int; int):
     return (
@@ -34,16 +30,17 @@ def parse_spell_resistance(root: ET.Element) -> int:
     return int(root.find('initiative/spell_resistance').text)
 
 def parse_classes(root: ET.Element):
-    class_values = []
-    for char_class in root.findall('basics/classes/class'):
-        class_values.append(char_class.find("name").text)
-    return tuple(class_values)
+    return tuple(c.find("name").text for c in root.findall('basics/classes/class'))
 
 def parse_skills(root: ET.Element) -> dict[str, int]:
-    skills = {}
-    for skill in root.findall('skills/skill'):
-        skills[skill.find("name").text] = int(skill.find("skill_mod").text)
-    return skills
+    return (
+        root
+        |> .findall('skills/skill')
+        |> map$(skill ->
+            (skill.find("name").text, skill.find("skill_mod").text |> int)
+        )
+        |> dict
+    )
 
 def parse_alignment(root: ET.Element) -> str:
     return root.find('basics/alignment/long').text
@@ -52,16 +49,10 @@ def parse_level(root: ET.Element) -> int:
     return int(root.find('basics/classes/levels_total').text)
 
 def parse_archetypes(root: ET.Element) -> (str; ...):
-    archetype_values = []
-    for archetype in root.findall('basics/archetypes/archetype'):
-        archetype_values.append(archetype.find("name").text)
-    return tuple(archetype_values)
+    return tuple(archetype.find("name").text for archetype in root.findall('basics/archetypes/archetype'))
 
 def parse_languages(root: ET.Element) -> (str; ...):
-    language_values = []
-    for language in root.findall('basics/languages/language'):
-        language_values.append(language.text)
-    return tuple([lang for lang in language_values if lang])
+    return tuple(lang.text for lang in root.findall('basics/languages/language') if lang.text)
 
 def parse_movement(root: ET.Element) -> (str; ...):
     movement_values = [0] * len(Movement)
@@ -69,12 +60,8 @@ def parse_movement(root: ET.Element) -> (str; ...):
         movement_values[Movement[movement.find("name").text].value] = int(movement.find("squares").text) * 5
     return tuple(movement_values)
 
-def parse_vision(root: ET.Element) -> dict[str, int]:
-    vision = {}
-    for curr_vision in root.findall('basics/vision/vision'):
-        vision_list = curr_vision.text.split()
-        vision[vision_list[0]] = int(vision_list[1].removeprefix("(").removesuffix(" ft)"))
-    return vision
+def parse_vision(root: ET.Element) -> list[str]:
+    return tuple(vision.text for vision in root.findall('basics/vision/vision'))
 
 def parse_gold(root: ET.Element) -> int:
     return int(root.find('basics/gold').text)
@@ -143,18 +130,20 @@ def parse_ranged_weapons(root: ET.Element) -> dict[str, dict[str, ((int; ...); s
     return weapons
 
 def parse_special_attacks(root: ET.Element) -> ((str; str); ...):
-    attacks = []
-    for attack in root.findall('special_attacks/special_attack'):
-        attacks.append((name=attack.find('name').text, description=attack.find('description').text))
-    return tuple(attacks)
+    return tuple(
+        (name=attack.find('name').text, description=attack.find('description').text) for attack in root.findall('special_attacks/special_attack')
+    )
 
 def parse_conditional_st_modifier(root: ET.Element) -> (str; ...):
-    modifiers = []
-    for modifier in root.findall('saving_throws/conditional_modifiers'):
-        if modifier:
-            for description in modifier.findall('savebonus/description'):
-                modifiers.append(description.text)
-    return tuple(modifiers)
+    return (
+        root
+        |> .findall('saving_throws/conditional_modifiers')
+        |> filter$(ident)
+        |> map$(.findall('savebonus/description'))
+        |> flatten
+        |> map$(.text)
+        |> tuple
+    )
 
 def create_spell_from_node(spell_node: ET.Element, **kwargs) -> Spell:
     effect_text = ""
