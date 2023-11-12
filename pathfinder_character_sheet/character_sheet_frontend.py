@@ -1,22 +1,22 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xc0a1581b
+# __coconut_hash__ = 0xa914f9d7
 
 # Compiled with Coconut version 3.0.3
 
 # Coconut Header: -------------------------------------------------------------
 
-from __future__ import generator_stop, annotations
+from __future__ import print_function, absolute_import, unicode_literals, division
 import sys as _coconut_sys
 import os as _coconut_os
-_coconut_header_info = ('3.0.3', '310', False)
-_coconut_cached__coconut__ = _coconut_sys.modules.get('__coconut__')
+_coconut_header_info = ('3.0.3', '', False)
+_coconut_cached__coconut__ = _coconut_sys.modules.get(str('__coconut__'))
 _coconut_file_dir = _coconut_os.path.dirname(_coconut_os.path.abspath(__file__))
 _coconut_pop_path = False
 if _coconut_cached__coconut__ is None or getattr(_coconut_cached__coconut__, "_coconut_header_info", None) != _coconut_header_info and _coconut_os.path.dirname(_coconut_cached__coconut__.__file__ or "") != _coconut_file_dir:
     if _coconut_cached__coconut__ is not None:
-        _coconut_sys.modules['_coconut_cached__coconut__'] = _coconut_cached__coconut__
-        del _coconut_sys.modules['__coconut__']
+        _coconut_sys.modules[str('_coconut_cached__coconut__')] = _coconut_cached__coconut__
+        del _coconut_sys.modules[str('__coconut__')]
     _coconut_sys.path.insert(0, _coconut_file_dir)
     _coconut_pop_path = True
     _coconut_module_name = _coconut_os.path.splitext(_coconut_os.path.basename(_coconut_file_dir))[0]
@@ -25,16 +25,16 @@ if _coconut_cached__coconut__ is None or getattr(_coconut_cached__coconut__, "_c
         import __coconut__ as _coconut__coconut__
         _coconut__coconut__.__name__ = _coconut_full_module_name
         for _coconut_v in vars(_coconut__coconut__).values():
-            if getattr(_coconut_v, "__module__", None) == '__coconut__':
+            if getattr(_coconut_v, "__module__", None) == str('__coconut__'):
                 try:
                     _coconut_v.__module__ = _coconut_full_module_name
                 except AttributeError:
                     _coconut_v_type = type(_coconut_v)
-                    if getattr(_coconut_v_type, "__module__", None) == '__coconut__':
+                    if getattr(_coconut_v_type, "__module__", None) == str('__coconut__'):
                         _coconut_v_type.__module__ = _coconut_full_module_name
         _coconut_sys.modules[_coconut_full_module_name] = _coconut__coconut__
 from __coconut__ import *
-from __coconut__ import _coconut_tail_call, _coconut_tco, _namedtuple_of, _coconut, _coconut_Expected, _coconut_MatchError, _coconut_SupportsAdd, _coconut_SupportsMinus, _coconut_SupportsMul, _coconut_SupportsPow, _coconut_SupportsTruediv, _coconut_SupportsFloordiv, _coconut_SupportsMod, _coconut_SupportsAnd, _coconut_SupportsXor, _coconut_SupportsOr, _coconut_SupportsLshift, _coconut_SupportsRshift, _coconut_SupportsMatmul, _coconut_SupportsInv, _coconut_iter_getitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_raise, _coconut_mark_as_match, _coconut_reiterable, _coconut_self_match_types, _coconut_dict_merge, _coconut_exec, _coconut_comma_op, _coconut_multi_dim_arr, _coconut_mk_anon_namedtuple, _coconut_matmul, _coconut_py_str, _coconut_flatten, _coconut_multiset, _coconut_back_none_pipe, _coconut_back_none_star_pipe, _coconut_back_none_dubstar_pipe, _coconut_forward_none_compose, _coconut_back_none_compose, _coconut_forward_none_star_compose, _coconut_back_none_star_compose, _coconut_forward_none_dubstar_compose, _coconut_back_none_dubstar_compose, _coconut_call_or_coefficient, _coconut_in, _coconut_not_in
+from __coconut__ import _coconut_tail_call, _coconut_tco, _coconut_call_set_names, _coconut_handle_cls_kwargs, _coconut_handle_cls_stargs, _namedtuple_of, _coconut, _coconut_Expected, _coconut_MatchError, _coconut_SupportsAdd, _coconut_SupportsMinus, _coconut_SupportsMul, _coconut_SupportsPow, _coconut_SupportsTruediv, _coconut_SupportsFloordiv, _coconut_SupportsMod, _coconut_SupportsAnd, _coconut_SupportsXor, _coconut_SupportsOr, _coconut_SupportsLshift, _coconut_SupportsRshift, _coconut_SupportsMatmul, _coconut_SupportsInv, _coconut_iter_getitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_raise, _coconut_mark_as_match, _coconut_reiterable, _coconut_self_match_types, _coconut_dict_merge, _coconut_exec, _coconut_comma_op, _coconut_multi_dim_arr, _coconut_mk_anon_namedtuple, _coconut_matmul, _coconut_py_str, _coconut_flatten, _coconut_multiset, _coconut_back_none_pipe, _coconut_back_none_star_pipe, _coconut_back_none_dubstar_pipe, _coconut_forward_none_compose, _coconut_back_none_compose, _coconut_forward_none_star_compose, _coconut_back_none_star_compose, _coconut_forward_none_dubstar_compose, _coconut_back_none_dubstar_compose, _coconut_call_or_coefficient, _coconut_in, _coconut_not_in
 if _coconut_pop_path:
     _coconut_sys.path.pop(0)
 try:
@@ -42,20 +42,30 @@ try:
 except NameError:
     pass
 else:
-    if __file__ and '__coconut_cache__' in __file__:
+    if __file__ and str('__coconut_cache__') in __file__:
         _coconut_file_comps = []
         while __file__:
             __file__, _coconut_file_comp = _coconut_os.path.split(__file__)
             if not _coconut_file_comp:
                 _coconut_file_comps.append(__file__)
                 break
-            if _coconut_file_comp != '__coconut_cache__':
+            if _coconut_file_comp != str('__coconut_cache__'):
                 _coconut_file_comps.append(_coconut_file_comp)
         __file__ = _coconut_os.path.join(*reversed(_coconut_file_comps))
 
 # Compiled Coconut: -----------------------------------------------------------
 
-from enum import Enum  #1 (line in Coconut source)
+try:  #1 (line in Coconut source)
+    _coconut_sys_0 = sys  # type: ignore  #1 (line in Coconut source)
+except _coconut.NameError:  #1 (line in Coconut source)
+    _coconut_sys_0 = _coconut_sentinel  #1 (line in Coconut source)
+sys = _coconut_sys  #1 (line in Coconut source)
+if sys.version_info >= (3, 4):  #1 (line in Coconut source)
+    from enum import Enum  #1 (line in Coconut source)
+else:  #1 (line in Coconut source)
+    from aenum import Enum  #1 (line in Coconut source)
+if _coconut_sys_0 is not _coconut_sentinel:  #1 (line in Coconut source)
+    sys = _coconut_sys_0  #1 (line in Coconut source)
 from random import Random  #2 (line in Coconut source)
 
 import justpy as jp  #4 (line in Coconut source)
@@ -212,7 +222,8 @@ def make_abilities_box(upper_container, char, rng):  #134 (line in Coconut sourc
     return ability_row  #154 (line in Coconut source)
 
 
-def make_weapons_box(upper_container, char, rng) -> dict[str, _coconut.typing.Tuple[_coconut.typing.Tuple[int, ...], str, str]]:  #156 (line in Coconut source)
+def make_weapons_box(upper_container, char, rng):  #156 (line in Coconut source)
+# type: (...) -> dict[str, _coconut.typing.Tuple[_coconut.typing.Tuple[int, ...], str, str]]
     weapons_row = make_col_flex_div()  #157 (line in Coconut source)
 
     table, table_body = make_table(["Weapon", "Attack Bonus", "Damage", "Crit Multiplier"])  #159 (line in Coconut source)
@@ -222,8 +233,8 @@ def make_weapons_box(upper_container, char, rng) -> dict[str, _coconut.typing.Tu
         table_row = jp.Tr()  #163 (line in Coconut source)
         table_body.add(table_row)  #164 (line in Coconut source)
         num_dice, die, modifier = get_attack_info(damage)  #165 (line in Coconut source)
-        attack_roll_modal = make_roll_modal(upper_container, modifier=[*attack_bonus,], rng=rng)  #166 (line in Coconut source)
-        weapon_name = make_roll_cell(rng, attack_roll_modal, click=_coconut.functools.partial(toggle_roll_modal, rng=rng, modifier=[*attack_bonus,]), text=weapon)  #167 (line in Coconut source)
+        attack_roll_modal = make_roll_modal(upper_container, modifier=_coconut.list(_coconut.itertools.chain(attack_bonus)), rng=rng)  #166 (line in Coconut source)
+        weapon_name = make_roll_cell(rng, attack_roll_modal, click=_coconut.functools.partial(toggle_roll_modal, rng=rng, modifier=_coconut.list(_coconut.itertools.chain(attack_bonus))), text=weapon)  #167 (line in Coconut source)
         table_row.add(weapon_name)  #172 (line in Coconut source)
         attack_bonus_cell = make_cell_div(text=make_mod_text(attack_bonus))  #173 (line in Coconut source)
         table_row.add(attack_bonus_cell)  #174 (line in Coconut source)
@@ -318,8 +329,10 @@ def make_collapsible_button_cell(click, text=""):  #274 (line in Coconut source)
     return cell  #281 (line in Coconut source)
 
 
-def make_save_text(save_type: str) -> str:  #283 (line in Coconut source)
-    save_dict = {"fort": "Fortitude", "ref": "Reflex", "will": "Will"}  #284 (line in Coconut source)
+def make_save_text(save_type  # type: str  #283 (line in Coconut source)
+    ):  #283 (line in Coconut source)
+# type: (...) -> str
+    save_dict = _coconut.dict((("fort", "Fortitude"), ("ref", "Reflex"), ("will", "Will")))  #284 (line in Coconut source)
     return save_dict[save_type]  #285 (line in Coconut source)
 
 
@@ -365,7 +378,9 @@ def make_lang_box(char):  #314 (line in Coconut source)
 
 
 @_coconut_tco  #330 (line in Coconut source)
-def make_spell_text(spell: Spell) -> str:  #330 (line in Coconut source)
+def make_spell_text(spell  # type: Spell  #330 (line in Coconut source)
+    ):  #330 (line in Coconut source)
+# type: (...) -> str
     return _coconut_tail_call("<b>DC:</b> {_coconut_format_0} | <b>Save:</b> {_coconut_format_1} | <b>Casting Time:</b> {_coconut_format_2} | <b>Target:</b> {_coconut_format_3} | <b>Range:</b> {_coconut_format_4} | <b>Duration:</b> {_coconut_format_5}<br><br>{_coconut_format_6}".format, _coconut_format_0=(spell.dc), _coconut_format_1=(spell.save_info), _coconut_format_2=(spell.casting_time), _coconut_format_3=(spell.target), _coconut_format_4=(spell.spell_range), _coconut_format_5=(spell.duration), _coconut_format_6=(spell.effect))  #331 (line in Coconut source)
 
 
