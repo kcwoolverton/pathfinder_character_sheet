@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xdd433f83
+# __coconut_hash__ = 0xeb12ccfc
 
 # Compiled with Coconut version 3.0.3-post_dev30
 
@@ -69,30 +69,32 @@ parser.add_argument('--port', type=int)  #11 (line in Coconut source)
 
 def server(char):  #13 (line in Coconut source)
     wp = jp.WebPage(data=_coconut.dict((('checked', False), ('hp', char.max_hp))))  #14 (line in Coconut source)
-    main_div = jp.Div(classes="w-full h-screen p-4", style="background-color: {_coconut_format_0}".format(_coconut_format_0=(background_color)), a=wp)  #15 (line in Coconut source)
-    rng = Random()  #16 (line in Coconut source)
-    history_box = make_title_box("50px", "1/4", "", overflow=True)  #17 (line in Coconut source)
-    large_row, button = make_large_row(wp, make_title_box("50px", "1/4", "", text="Long Rest", click=_coconut_partial(long_rest_click, char=char)), char, rng, history_box)  #18 (line in Coconut source)
-    large_row.set_class('mt-4')  #25 (line in Coconut source)
-    title_row = make_title_row(char, button, history_box)  #26 (line in Coconut source)
-    main_div.add(title_row, make_useful_info_row(wp, button, char, rng, history_box), large_row)  #27 (line in Coconut source)
-    return wp  #28 (line in Coconut source)
+    jp.Link(href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css", a=wp)  #15 (line in Coconut source)
+
+    main_div = jp.Div(classes="w-full h-screen p-4", style="background-color: {_coconut_format_0}".format(_coconut_format_0=(background_color)), a=wp)  #17 (line in Coconut source)
+    rng = Random()  #18 (line in Coconut source)
+    history_box = make_title_box("50px", "1/4", "", overflow=True)  #19 (line in Coconut source)
+    large_row, button = make_large_row(wp, make_title_box("50px", "1/4", "", text="Long Rest", click=_coconut_partial(long_rest_click, char=char)), char, rng, history_box)  #20 (line in Coconut source)
+    large_row.set_class('mt-4')  #27 (line in Coconut source)
+    title_row = make_title_row(char, button, history_box)  #28 (line in Coconut source)
+    main_div.add(title_row, make_useful_info_row(wp, button, char, rng, history_box), large_row)  #29 (line in Coconut source)
+    return wp  #30 (line in Coconut source)
 
 
-if __name__ == "__main__":  #30 (line in Coconut source)
-    args = parser.parse_args()  #31 (line in Coconut source)
-    file_to_read = args.input_file  #32 (line in Coconut source)
-    if not file_to_read.endswith(".xml"):  #33 (line in Coconut source)
-        raise ValueError("Input file must be an xml file.")  #34 (line in Coconut source)
-    char = parse_xml(file_to_read)  # type: Character  #35 (line in Coconut source)
-    if "__annotations__" not in _coconut.locals():  #35 (line in Coconut source)
-        __annotations__ = {}  # type: ignore  #35 (line in Coconut source)
-    __annotations__["char"] = 'Character'  #35 (line in Coconut source)
-    @_coconut_tco  #36 (line in Coconut source)
-    def server_partial():  #36 (line in Coconut source)
-        return _coconut_tail_call(server, char)  #37 (line in Coconut source)
+if __name__ == "__main__":  #32 (line in Coconut source)
+    args = parser.parse_args()  #33 (line in Coconut source)
+    file_to_read = args.input_file  #34 (line in Coconut source)
+    if not file_to_read.endswith(".xml"):  #35 (line in Coconut source)
+        raise ValueError("Input file must be an xml file.")  #36 (line in Coconut source)
+    char = parse_xml(file_to_read)  # type: Character  #37 (line in Coconut source)
+    if "__annotations__" not in _coconut.locals():  #37 (line in Coconut source)
+        __annotations__ = {}  # type: ignore  #37 (line in Coconut source)
+    __annotations__["char"] = 'Character'  #37 (line in Coconut source)
+    @_coconut_tco  #38 (line in Coconut source)
+    def server_partial():  #38 (line in Coconut source)
+        return _coconut_tail_call(server, char)  #39 (line in Coconut source)
 
-    port = 8080  #38 (line in Coconut source)
-    if args.port:  #39 (line in Coconut source)
-        port = args.port  #40 (line in Coconut source)
-    jp.justpy(server_partial, port=port)  #41 (line in Coconut source)
+    port = 8080  #40 (line in Coconut source)
+    if args.port:  #41 (line in Coconut source)
+        port = args.port  #42 (line in Coconut source)
+    jp.justpy(server_partial, port=port)  #43 (line in Coconut source)

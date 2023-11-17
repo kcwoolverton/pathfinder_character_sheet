@@ -12,6 +12,8 @@ parser.add_argument('--port', type=int)
 
 def server(char):
     wp = jp.WebPage(data={'checked': False, 'hp': char.max_hp})
+    jp.Link(href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css", a=wp)
+
     main_div = jp.Div(classes="w-full h-screen p-4", style=f"background-color: {background_color}", a=wp)
     rng = Random()
     history_box = make_title_box("50px", "1/4", "", overflow=True)

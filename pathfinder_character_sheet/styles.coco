@@ -30,11 +30,14 @@ checkbox_style = "transform: scale(1.0);"
 hit_points_classes = "border border-gray-300 shadow-lg p-4 rounded-md m-4 focus:outline-none focus:bg-white focus:border-purple-500"
 hit_points_style = ""
 
-collapse_button_classes = f'bg-{button_color} hover:bg-{hover_color} {text_color} font-bold py-2 px-4'
+collapse_button_classes = f'bg-{button_color} hover:bg-{hover_color} {text_color} font-bold py-2 px-4 flex justify-between items-center'
 collapse_button_style = ""
 
 roll_cell_style = ""
 roll_cell_classes = f"bg-{button_color} hover:bg-{hover_color} {text_color} font-bold py-2 px-4 text-center"
+
+caret_style = ""
+caret_classes = "fas fa-angle-down right-2"
 
 def make_col_flex_div(overflow=False):
     classes = "flex-col w-full"
