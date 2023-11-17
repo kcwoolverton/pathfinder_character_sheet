@@ -333,13 +333,16 @@ def make_roll_cell(rng, roll_modal, click, text=""):
     cell.roll_modal = roll_modal
     return cell
 
-def make_collapsible_button_cell(click, text=""):
+def make_collapsible_button_cell(click, text="", spell=False):
+    classes = collapse_button_classes
+    if spell:
+        classes = spell_button_classes
     cell = jp.Td(
-        classes=collapse_button_classes,
+        classes=classes,
         style=collapse_button_style,
         click=click,
     )
-    cell.add(jp.Span(text=text))
+    cell.add(jp.Span(text=f"{text}  "))
     cell.add(jp.I(classes=caret_classes, style=caret_style))
 
     return cell
@@ -399,9 +402,9 @@ def toggle_collapsible_content(self, msg):
     else:
         self.content.set_class('hidden')
 
-def make_collapsible_comp(upper_container, button_name="", inner_text=""):
+def make_collapsible_comp(upper_container, button_name="", inner_text="", spell=False):
     content = jp.Div(inner_html=inner_text, classes='border p-4 hidden')
-    button = make_collapsible_button_cell(click=toggle_collapsible_content, text=button_name)
+    button = make_collapsible_button_cell(click=toggle_collapsible_content, text=button_name, spell=spell)
     button.content = content
     upper_container.add(button)
 
@@ -419,7 +422,7 @@ def make_spells_box(reset_button, char):
         table_body.add(table_row)
         next_row = jp.Tr()
         table_body.add(next_row)
-        spell_cell = make_collapsible_comp(table_row, spell.name, make_spell_text(spell))
+        spell_cell = make_collapsible_comp(table_row, spell.name, make_spell_text(spell), spell=True)
         next_row.add(spell_cell)
         num_checkboxes = spell.times_memorized
         if spell.level == "0":

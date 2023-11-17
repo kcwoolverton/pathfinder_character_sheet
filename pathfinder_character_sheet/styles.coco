@@ -31,6 +31,7 @@ hit_points_classes = "border border-gray-300 shadow-lg p-4 rounded-md m-4 focus:
 hit_points_style = ""
 
 collapse_button_classes = f'bg-{button_color} hover:bg-{hover_color} {text_color} font-bold py-2 px-4 flex justify-between items-center'
+spell_button_classes = f'bg-{button_color} hover:bg-{hover_color} {text_color} font-bold py-2 px-4'
 collapse_button_style = ""
 
 roll_cell_style = ""
