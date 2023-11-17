@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x59d799ec
+# __coconut_hash__ = 0xc0c64093
 
 # Compiled with Coconut version 3.0.3-post_dev30
 
@@ -76,47 +76,50 @@ flex_row_classes = "flex w-full gap-4"  #18 (line in Coconut source)
 flex_row_style = "background-color: {_coconut_format_0};".format(_coconut_format_0=(background_color))  #19 (line in Coconut source)
 one_third_col_classes = "flex flex-col w-1/3 gap-4"  #20 (line in Coconut source)
 
-reset_button_classes = "bg-{_coconut_format_0} hover:bg-{_coconut_format_1} {_coconut_format_2} font-bold py-2 px-4 rounded".format(_coconut_format_0=(button_color), _coconut_format_1=(hover_color), _coconut_format_2=(text_color))  #22 (line in Coconut source)
-reset_button_style = ""  #23 (line in Coconut source)
+large_row_classes = "flex w-full gap-4 pb-8"  #22 (line in Coconut source)
+large_row_style = "background-color: {_coconut_format_0};".format(_coconut_format_0=(background_color))  #23 (line in Coconut source)
 
-checkbox_div_classes = "flex w-full p-4 m-4"  #25 (line in Coconut source)
-checkbox_div_style = "background-color: transparent;"  #26 (line in Coconut source)
-checkbox_classes = "bg-blue-500 m-2 p-2"  #27 (line in Coconut source)
-checkbox_style = "transform: scale(1.0);"  #28 (line in Coconut source)
+reset_button_classes = "bg-{_coconut_format_0} hover:bg-{_coconut_format_1} {_coconut_format_2} font-bold py-2 px-4 rounded".format(_coconut_format_0=(button_color), _coconut_format_1=(hover_color), _coconut_format_2=(text_color))  #25 (line in Coconut source)
+reset_button_style = ""  #26 (line in Coconut source)
 
-hit_points_classes = "border border-gray-300 shadow-lg p-4 rounded-md m-4 focus:outline-none focus:bg-white focus:border-purple-500"  #30 (line in Coconut source)
-hit_points_style = ""  #31 (line in Coconut source)
+checkbox_div_classes = "flex w-full p-4 m-4"  #28 (line in Coconut source)
+checkbox_div_style = "background-color: transparent;"  #29 (line in Coconut source)
+checkbox_classes = "bg-blue-500 m-2 p-2"  #30 (line in Coconut source)
+checkbox_style = "transform: scale(1.0);"  #31 (line in Coconut source)
 
-collapse_button_classes = 'bg-{_coconut_format_0} hover:bg-{_coconut_format_1} {_coconut_format_2} font-bold py-2 px-4 flex justify-between items-center'.format(_coconut_format_0=(button_color), _coconut_format_1=(hover_color), _coconut_format_2=(text_color))  #33 (line in Coconut source)
-spell_button_classes = 'bg-{_coconut_format_0} hover:bg-{_coconut_format_1} {_coconut_format_2} font-bold py-2 px-4'.format(_coconut_format_0=(button_color), _coconut_format_1=(hover_color), _coconut_format_2=(text_color))  #34 (line in Coconut source)
-collapse_button_style = ""  #35 (line in Coconut source)
+hit_points_classes = "border border-gray-300 shadow-lg p-4 rounded-md m-4 focus:outline-none focus:bg-white focus:border-purple-500"  #33 (line in Coconut source)
+hit_points_style = ""  #34 (line in Coconut source)
 
-roll_cell_style = ""  #37 (line in Coconut source)
-roll_cell_classes = "bg-{_coconut_format_0} hover:bg-{_coconut_format_1} {_coconut_format_2} font-bold py-2 px-4 text-center".format(_coconut_format_0=(button_color), _coconut_format_1=(hover_color), _coconut_format_2=(text_color))  #38 (line in Coconut source)
+collapse_button_classes = 'bg-{_coconut_format_0} hover:bg-{_coconut_format_1} {_coconut_format_2} font-bold py-2 px-4 flex justify-between items-center'.format(_coconut_format_0=(button_color), _coconut_format_1=(hover_color), _coconut_format_2=(text_color))  #36 (line in Coconut source)
+spell_button_classes = 'bg-{_coconut_format_0} hover:bg-{_coconut_format_1} {_coconut_format_2} font-bold py-2 px-4'.format(_coconut_format_0=(button_color), _coconut_format_1=(hover_color), _coconut_format_2=(text_color))  #37 (line in Coconut source)
+collapse_button_style = ""  #38 (line in Coconut source)
 
-caret_style = ""  #40 (line in Coconut source)
-caret_classes = "fas fa-angle-down right-2"  #41 (line in Coconut source)
+roll_cell_style = ""  #40 (line in Coconut source)
+roll_cell_classes = "bg-{_coconut_format_0} hover:bg-{_coconut_format_1} {_coconut_format_2} font-bold py-2 px-4 text-center".format(_coconut_format_0=(button_color), _coconut_format_1=(hover_color), _coconut_format_2=(text_color))  #41 (line in Coconut source)
 
-@_coconut_tco  #43 (line in Coconut source)
-def make_col_flex_div(overflow=False):  #43 (line in Coconut source)
-    classes = "flex-col w-full"  #44 (line in Coconut source)
-    if overflow:  #45 (line in Coconut source)
-        classes += " overflow-auto overflow-x-auto"  #46 (line in Coconut source)
-    return _coconut_tail_call(jp.Div, classes=classes, style="background-color: {_coconut_format_0}".format(_coconut_format_0=(background_color)))  #47 (line in Coconut source)
+caret_style = ""  #43 (line in Coconut source)
+caret_classes = "fas fa-angle-down right-2"  #44 (line in Coconut source)
+
+@_coconut_tco  #46 (line in Coconut source)
+def make_col_flex_div(overflow=False):  #46 (line in Coconut source)
+    classes = "flex-col w-full"  #47 (line in Coconut source)
+    if overflow:  #48 (line in Coconut source)
+        classes += " overflow-auto overflow-x-auto"  #49 (line in Coconut source)
+    return _coconut_tail_call(jp.Div, classes=classes, style="background-color: {_coconut_format_0}".format(_coconut_format_0=(background_color)))  #50 (line in Coconut source)
 
 
 
-def make_title_box(height,  # type: str  #50 (line in Coconut source)
-    width,  # type: str  #50 (line in Coconut source)
-    title,  # type: str  #50 (line in Coconut source)
-    click=None, text="", overflow=False):  #50 (line in Coconut source)
-    box_style = "background-color: #f9f9f9; border: 1px solid #ccc; shadow-lg; padding: 20px; w-{_coconut_format_0}; height: {_coconut_format_1}; rounded;".format(_coconut_format_0=(width), _coconut_format_1=(height))  #51 (line in Coconut source)
-    if overflow:  #52 (line in Coconut source)
-        box_style += " overflow-y: auto;"  #53 (line in Coconut source)
-    if click:  #54 (line in Coconut source)
-        box = jp.Div(classes="bg-{_coconut_format_0} hover:bg-{_coconut_format_1} {_coconut_format_2} shadow-lg p-4 m-4 rounded-md flex items-center justify-center".format(_coconut_format_0=(button_color), _coconut_format_1=(hover_color), _coconut_format_2=(text_color)), style="border:tpx: solid #ccc; shadow-lg; padding: 20px; w-{_coconut_format_0}; height: {_coconut_format_1}".format(_coconut_format_0=(width), _coconut_format_1=(height)), inner_html="<b>" + text, click=click)  #55 (line in Coconut source)
-    else:  #61 (line in Coconut source)
-        box = jp.Div(classes="border border-gray-300 shadow-lg p-4 rounded-md m-4 flex text-center items-center justify-center", style=box_style, text=text)  #62 (line in Coconut source)
-    title = jp.H2(classes="font-bold mb-2 text-center justify-center", text=title)  #64 (line in Coconut source)
-    box.add(title)  #65 (line in Coconut source)
-    return box  #66 (line in Coconut source)
+def make_title_box(height,  # type: str  #53 (line in Coconut source)
+    width,  # type: str  #53 (line in Coconut source)
+    title,  # type: str  #53 (line in Coconut source)
+    click=None, text="", overflow=False):  #53 (line in Coconut source)
+    box_style = "background-color: #f9f9f9; border: 1px solid #ccc; shadow-lg; padding: 20px; w-{_coconut_format_0}; height: {_coconut_format_1}; rounded;".format(_coconut_format_0=(width), _coconut_format_1=(height))  #54 (line in Coconut source)
+    if overflow:  #55 (line in Coconut source)
+        box_style += " overflow-y: auto;"  #56 (line in Coconut source)
+    if click:  #57 (line in Coconut source)
+        box = jp.Div(classes="bg-{_coconut_format_0} hover:bg-{_coconut_format_1} {_coconut_format_2} shadow-lg p-4 m-4 rounded-md flex items-center justify-center".format(_coconut_format_0=(button_color), _coconut_format_1=(hover_color), _coconut_format_2=(text_color)), style="border:tpx: solid #ccc; shadow-lg; padding: 20px; w-{_coconut_format_0}; height: {_coconut_format_1}".format(_coconut_format_0=(width), _coconut_format_1=(height)), inner_html="<b>" + text, click=click)  #58 (line in Coconut source)
+    else:  #64 (line in Coconut source)
+        box = jp.Div(classes="border border-gray-300 shadow-lg p-4 rounded-md m-4 flex text-center items-center justify-center", style=box_style, text=text)  #65 (line in Coconut source)
+    title = jp.H2(classes="font-bold mb-2 text-center justify-center", text=title)  #67 (line in Coconut source)
+    box.add(title)  #68 (line in Coconut source)
+    return box  #69 (line in Coconut source)

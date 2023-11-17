@@ -537,7 +537,7 @@ def make_cmb_and_cmd_box(upper_container, char, rng, history_box):
     return cm_row
 
 def make_large_row(upper_container, reset_button, char, rng, history_box):
-    main_row = make_row_flex_div()
+    main_row = jp.Div(classes=large_row_classes, style=large_row_style)
 
     cm_box = make_cmb_and_cmd_box(upper_container, char, rng, history_box)
 

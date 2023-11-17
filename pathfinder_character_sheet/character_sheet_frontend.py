@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x226b73ef
+# __coconut_hash__ = 0x24d405ba
 
 # Compiled with Coconut version 3.0.3-post_dev30
 
@@ -555,7 +555,7 @@ def make_cmb_and_cmd_box(upper_container, char, rng, history_box):  #501 (line i
 
 
 def make_large_row(upper_container, reset_button, char, rng, history_box):  #539 (line in Coconut source)
-    main_row = make_row_flex_div()  #540 (line in Coconut source)
+    main_row = jp.Div(classes=large_row_classes, style=large_row_style)  #540 (line in Coconut source)
 
     cm_box = make_cmb_and_cmd_box(upper_container, char, rng, history_box)  #542 (line in Coconut source)
 
