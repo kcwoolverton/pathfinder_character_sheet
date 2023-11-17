@@ -14,15 +14,17 @@ def server(char):
     wp = jp.WebPage(data={'checked': False, 'hp': char.max_hp})
     main_div = jp.Div(classes="w-full h-screen p-4", style=f"background-color: {background_color}", a=wp)
     rng = Random()
+    history_box = make_title_box("50px", "1/4", "", overflow=True)
     large_row, button = make_large_row(
         wp,
         make_title_box("50px", "1/4", "", text="Long Rest", click=long_rest_click$(char=char)),
         char,
-        rng
+        rng,
+        history_box,
     )
     large_row.set_class('mt-4')
-    title_row = make_title_row(char, button)
-    main_div.add(title_row, make_useful_info_row(wp, button, char, rng), large_row)
+    title_row = make_title_row(char, button, history_box)
+    main_div.add(title_row, make_useful_info_row(wp, button, char, rng, history_box), large_row)
     return wp
 
 if __name__ == "__main__":

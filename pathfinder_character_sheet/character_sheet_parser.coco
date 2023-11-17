@@ -145,7 +145,7 @@ def parse_conditional_st_modifier(root: ET.Element) -> (str; ...):
         |> tuple
     )
 
-def create_spell_from_node(spell_node: ET.Element, **kwargs) -> Spell:
+def create_spell_from_node(spell_node: ET.Element, casts=-1, **kwargs) -> Spell:
     effect_text = ""
     if spell_node.findall('effect/para'):
         for para in spell_node.findall('effect/para'):
@@ -153,13 +153,17 @@ def create_spell_from_node(spell_node: ET.Element, **kwargs) -> Spell:
         effect_text.removesuffix("<br><br>")
     else:
         effect_text = spell_node.find('effect').text
+    if casts >= 0:
+        times_memorized = casts
+    else:
+        times_memorized = spell_node.find("times_memorized").text
     return Spell(
             name=spell_node.find("name").text,
-            times_memorized=spell_node.find("times_memorized").text,
+            times_memorized=times_memorized,
             spell_range=spell_node.find("range").text,
             casting_time=spell_node.find("castingtime").text,
             effect=effect_text,
-            time_units=spell_node.find("times_unit").text,
+            time_units=None,
             dc=spell_node.find("dc").text,
             target=spell_node.find("target").text,
             save_info=spell_node.find("saveinfo").text,
@@ -172,6 +176,14 @@ def parse_spells(root: ET.Element) -> list[Spell]:
         create_spell_from_node(node)
         for node in root.findall('spells/memorized_spells/racial_innate_memorized/spell') :: root.findall('spells/memorized_spells/class_innate_memorized/spell')
     ]
+    for spell_class_node in root.findall('spells/known_spells/class'):
+        if spell_class_node.attrib["memorize"] == "false":
+            for spell_level_node in spell_class_node.findall('level'):
+                level = spell_level_node.attrib["number"]
+                casts = int(spell_level_node.attrib["cast"])
+                for spell_node in spell_level_node.findall('spell'):
+                    spell = create_spell_from_node(spell_node, level=level, casts=casts)
+                    spell_list.append(spell)
     for spell_level_node in root.findall('spells/memorized_spells/spellbook/class/level'):
         level = spell_level_node.attrib["number"]
         for spell_node in spell_level_node.findall('spell'):

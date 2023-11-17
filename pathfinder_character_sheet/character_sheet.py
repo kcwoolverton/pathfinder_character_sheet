@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x1afd9b5f
+# __coconut_hash__ = 0xdd433f83
 
-# Compiled with Coconut version 3.0.3
+# Compiled with Coconut version 3.0.3-post_dev30
 
 # Coconut Header: -------------------------------------------------------------
 
 from __future__ import print_function, absolute_import, unicode_literals, division
 import sys as _coconut_sys
 import os as _coconut_os
-_coconut_header_info = ('3.0.3', '', False)
+_coconut_header_info = ('3.0.3-post_dev30', '', False)
 _coconut_cached__coconut__ = _coconut_sys.modules.get(str('__coconut__'))
 _coconut_file_dir = _coconut_os.path.dirname(_coconut_os.path.abspath(__file__))
 _coconut_pop_path = False
@@ -34,7 +34,7 @@ if _coconut_cached__coconut__ is None or getattr(_coconut_cached__coconut__, "_c
                         _coconut_v_type.__module__ = _coconut_full_module_name
         _coconut_sys.modules[_coconut_full_module_name] = _coconut__coconut__
 from __coconut__ import *
-from __coconut__ import _coconut_tail_call, _coconut_tco, _coconut_call_set_names, _coconut_handle_cls_kwargs, _coconut_handle_cls_stargs, _namedtuple_of, _coconut, _coconut_Expected, _coconut_MatchError, _coconut_SupportsAdd, _coconut_SupportsMinus, _coconut_SupportsMul, _coconut_SupportsPow, _coconut_SupportsTruediv, _coconut_SupportsFloordiv, _coconut_SupportsMod, _coconut_SupportsAnd, _coconut_SupportsXor, _coconut_SupportsOr, _coconut_SupportsLshift, _coconut_SupportsRshift, _coconut_SupportsMatmul, _coconut_SupportsInv, _coconut_iter_getitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_raise, _coconut_mark_as_match, _coconut_reiterable, _coconut_self_match_types, _coconut_dict_merge, _coconut_exec, _coconut_comma_op, _coconut_multi_dim_arr, _coconut_mk_anon_namedtuple, _coconut_matmul, _coconut_py_str, _coconut_flatten, _coconut_multiset, _coconut_back_none_pipe, _coconut_back_none_star_pipe, _coconut_back_none_dubstar_pipe, _coconut_forward_none_compose, _coconut_back_none_compose, _coconut_forward_none_star_compose, _coconut_back_none_star_compose, _coconut_forward_none_dubstar_compose, _coconut_back_none_dubstar_compose, _coconut_call_or_coefficient, _coconut_in, _coconut_not_in
+from __coconut__ import _coconut_tail_call, _coconut_tco, _coconut_call_set_names, _coconut_handle_cls_kwargs, _coconut_handle_cls_stargs, _namedtuple_of, _coconut, _coconut_Expected, _coconut_MatchError, _coconut_SupportsAdd, _coconut_SupportsMinus, _coconut_SupportsMul, _coconut_SupportsPow, _coconut_SupportsTruediv, _coconut_SupportsFloordiv, _coconut_SupportsMod, _coconut_SupportsAnd, _coconut_SupportsXor, _coconut_SupportsOr, _coconut_SupportsLshift, _coconut_SupportsRshift, _coconut_SupportsMatmul, _coconut_SupportsInv, _coconut_iter_getitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_complex_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_raise, _coconut_mark_as_match, _coconut_reiterable, _coconut_self_match_types, _coconut_dict_merge, _coconut_exec, _coconut_comma_op, _coconut_multi_dim_arr, _coconut_mk_anon_namedtuple, _coconut_matmul, _coconut_py_str, _coconut_flatten, _coconut_multiset, _coconut_back_none_pipe, _coconut_back_none_star_pipe, _coconut_back_none_dubstar_pipe, _coconut_forward_none_compose, _coconut_back_none_compose, _coconut_forward_none_star_compose, _coconut_back_none_star_compose, _coconut_forward_none_dubstar_compose, _coconut_back_none_dubstar_compose, _coconut_call_or_coefficient, _coconut_in, _coconut_not_in, _coconut_attritemgetter
 if _coconut_pop_path:
     _coconut_sys.path.pop(0)
 try:
@@ -71,27 +71,28 @@ def server(char):  #13 (line in Coconut source)
     wp = jp.WebPage(data=_coconut.dict((('checked', False), ('hp', char.max_hp))))  #14 (line in Coconut source)
     main_div = jp.Div(classes="w-full h-screen p-4", style="background-color: {_coconut_format_0}".format(_coconut_format_0=(background_color)), a=wp)  #15 (line in Coconut source)
     rng = Random()  #16 (line in Coconut source)
-    large_row, button = make_large_row(wp, make_title_box("50px", "1/4", "", text="Long Rest", click=_coconut.functools.partial(long_rest_click, char=char)), char, rng)  #17 (line in Coconut source)
-    large_row.set_class('mt-4')  #23 (line in Coconut source)
-    title_row = make_title_row(char, button)  #24 (line in Coconut source)
-    main_div.add(title_row, make_useful_info_row(wp, button, char, rng), large_row)  #25 (line in Coconut source)
-    return wp  #26 (line in Coconut source)
+    history_box = make_title_box("50px", "1/4", "", overflow=True)  #17 (line in Coconut source)
+    large_row, button = make_large_row(wp, make_title_box("50px", "1/4", "", text="Long Rest", click=_coconut_partial(long_rest_click, char=char)), char, rng, history_box)  #18 (line in Coconut source)
+    large_row.set_class('mt-4')  #25 (line in Coconut source)
+    title_row = make_title_row(char, button, history_box)  #26 (line in Coconut source)
+    main_div.add(title_row, make_useful_info_row(wp, button, char, rng, history_box), large_row)  #27 (line in Coconut source)
+    return wp  #28 (line in Coconut source)
 
 
-if __name__ == "__main__":  #28 (line in Coconut source)
-    args = parser.parse_args()  #29 (line in Coconut source)
-    file_to_read = args.input_file  #30 (line in Coconut source)
-    if not file_to_read.endswith(".xml"):  #31 (line in Coconut source)
-        raise ValueError("Input file must be an xml file.")  #32 (line in Coconut source)
-    char = parse_xml(file_to_read)  # type: Character  #33 (line in Coconut source)
-    if "__annotations__" not in _coconut.locals():  #33 (line in Coconut source)
-        __annotations__ = {}  # type: ignore  #33 (line in Coconut source)
-    __annotations__["char"] = 'Character'  #33 (line in Coconut source)
-    @_coconut_tco  #34 (line in Coconut source)
-    def server_partial():  #34 (line in Coconut source)
-        return _coconut_tail_call(server, char)  #35 (line in Coconut source)
+if __name__ == "__main__":  #30 (line in Coconut source)
+    args = parser.parse_args()  #31 (line in Coconut source)
+    file_to_read = args.input_file  #32 (line in Coconut source)
+    if not file_to_read.endswith(".xml"):  #33 (line in Coconut source)
+        raise ValueError("Input file must be an xml file.")  #34 (line in Coconut source)
+    char = parse_xml(file_to_read)  # type: Character  #35 (line in Coconut source)
+    if "__annotations__" not in _coconut.locals():  #35 (line in Coconut source)
+        __annotations__ = {}  # type: ignore  #35 (line in Coconut source)
+    __annotations__["char"] = 'Character'  #35 (line in Coconut source)
+    @_coconut_tco  #36 (line in Coconut source)
+    def server_partial():  #36 (line in Coconut source)
+        return _coconut_tail_call(server, char)  #37 (line in Coconut source)
 
-    port = 8080  #36 (line in Coconut source)
-    if args.port:  #37 (line in Coconut source)
-        port = args.port  #38 (line in Coconut source)
-    jp.justpy(server_partial, port=port)  #39 (line in Coconut source)
+    port = 8080  #38 (line in Coconut source)
+    if args.port:  #39 (line in Coconut source)
+        port = args.port  #40 (line in Coconut source)
+    jp.justpy(server_partial, port=port)  #41 (line in Coconut source)

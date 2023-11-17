@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xa86bca7b
+# __coconut_hash__ = 0xee0db2dd
 
-# Compiled with Coconut version 3.0.3
+# Compiled with Coconut version 3.0.3-post_dev30
 
 # Coconut Header: -------------------------------------------------------------
 
 from __future__ import print_function, absolute_import, unicode_literals, division
 import sys as _coconut_sys
 import os as _coconut_os
-_coconut_header_info = ('3.0.3', '', False)
+_coconut_header_info = ('3.0.3-post_dev30', '', False)
 _coconut_cached__coconut__ = _coconut_sys.modules.get(str('__coconut__'))
 _coconut_file_dir = _coconut_os.path.dirname(_coconut_os.path.abspath(__file__))
 _coconut_pop_path = False
@@ -34,7 +34,7 @@ if _coconut_cached__coconut__ is None or getattr(_coconut_cached__coconut__, "_c
                         _coconut_v_type.__module__ = _coconut_full_module_name
         _coconut_sys.modules[_coconut_full_module_name] = _coconut__coconut__
 from __coconut__ import *
-from __coconut__ import _coconut_tail_call, _coconut_tco, _coconut_call_set_names, _coconut_handle_cls_kwargs, _coconut_handle_cls_stargs, _namedtuple_of, _coconut, _coconut_Expected, _coconut_MatchError, _coconut_SupportsAdd, _coconut_SupportsMinus, _coconut_SupportsMul, _coconut_SupportsPow, _coconut_SupportsTruediv, _coconut_SupportsFloordiv, _coconut_SupportsMod, _coconut_SupportsAnd, _coconut_SupportsXor, _coconut_SupportsOr, _coconut_SupportsLshift, _coconut_SupportsRshift, _coconut_SupportsMatmul, _coconut_SupportsInv, _coconut_iter_getitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_raise, _coconut_mark_as_match, _coconut_reiterable, _coconut_self_match_types, _coconut_dict_merge, _coconut_exec, _coconut_comma_op, _coconut_multi_dim_arr, _coconut_mk_anon_namedtuple, _coconut_matmul, _coconut_py_str, _coconut_flatten, _coconut_multiset, _coconut_back_none_pipe, _coconut_back_none_star_pipe, _coconut_back_none_dubstar_pipe, _coconut_forward_none_compose, _coconut_back_none_compose, _coconut_forward_none_star_compose, _coconut_back_none_star_compose, _coconut_forward_none_dubstar_compose, _coconut_back_none_dubstar_compose, _coconut_call_or_coefficient, _coconut_in, _coconut_not_in
+from __coconut__ import _coconut_tail_call, _coconut_tco, _coconut_call_set_names, _coconut_handle_cls_kwargs, _coconut_handle_cls_stargs, _namedtuple_of, _coconut, _coconut_Expected, _coconut_MatchError, _coconut_SupportsAdd, _coconut_SupportsMinus, _coconut_SupportsMul, _coconut_SupportsPow, _coconut_SupportsTruediv, _coconut_SupportsFloordiv, _coconut_SupportsMod, _coconut_SupportsAnd, _coconut_SupportsXor, _coconut_SupportsOr, _coconut_SupportsLshift, _coconut_SupportsRshift, _coconut_SupportsMatmul, _coconut_SupportsInv, _coconut_iter_getitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_complex_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_raise, _coconut_mark_as_match, _coconut_reiterable, _coconut_self_match_types, _coconut_dict_merge, _coconut_exec, _coconut_comma_op, _coconut_multi_dim_arr, _coconut_mk_anon_namedtuple, _coconut_matmul, _coconut_py_str, _coconut_flatten, _coconut_multiset, _coconut_back_none_pipe, _coconut_back_none_star_pipe, _coconut_back_none_dubstar_pipe, _coconut_forward_none_compose, _coconut_back_none_compose, _coconut_forward_none_star_compose, _coconut_back_none_star_compose, _coconut_forward_none_dubstar_compose, _coconut_back_none_dubstar_compose, _coconut_call_or_coefficient, _coconut_in, _coconut_not_in, _coconut_attritemgetter
 if _coconut_pop_path:
     _coconut_sys.path.pop(0)
 try:
@@ -58,10 +58,10 @@ else:
 import justpy as jp  #1 (line in Coconut source)
 
 background_color = "#f9f9f9"  #3 (line in Coconut source)
-button_color = "purple-100"  #4 (line in Coconut source)
-hover_color = "purple-200"  #5 (line in Coconut source)
+button_color = "blue-500"  #4 (line in Coconut source)
+hover_color = "blue-600"  #5 (line in Coconut source)
 header_color = "#A0522D"  #6 (line in Coconut source)
-text_color = ""  #7 (line in Coconut source)
+text_color = "text-white"  #7 (line in Coconut source)
 
 table_classes = "min-w-full bg-white border rounded shadow"  #9 (line in Coconut source)
 table_style = "transform: scale(1.0)"  #10 (line in Coconut source)
@@ -105,12 +105,14 @@ def make_col_flex_div(overflow=False):  #39 (line in Coconut source)
 def make_title_box(height,  # type: str  #46 (line in Coconut source)
     width,  # type: str  #46 (line in Coconut source)
     title,  # type: str  #46 (line in Coconut source)
-    click=None, text=""):  #46 (line in Coconut source)
-    box_style = "background-color: #f9f9f9; border: 1px solid #ccc; shadow-lg; padding: 20px; w-{_coconut_format_0}; height: {_coconut_format_1}; overflow-y: auto rounded".format(_coconut_format_0=(width), _coconut_format_1=(height))  #47 (line in Coconut source)
-    if click:  #48 (line in Coconut source)
-        box = jp.Div(classes="bg-{_coconut_format_0} hover:bg-{_coconut_format_1} {_coconut_format_2} shadow-lg p-4 m-4 rounded-md flex items-center justify-center".format(_coconut_format_0=(button_color), _coconut_format_1=(hover_color), _coconut_format_2=(text_color)), style="border:tpx: solid #ccc; shadow-lg; padding: 20px; w-{_coconut_format_0}; height: {_coconut_format_1}".format(_coconut_format_0=(width), _coconut_format_1=(height)), inner_html="<b>" + text, click=click)  #49 (line in Coconut source)
-    else:  #55 (line in Coconut source)
-        box = jp.Div(classes="border border-gray-300 shadow-lg p-4 rounded-md m-4 flex items-center justify-center", style=box_style, text=text)  #56 (line in Coconut source)
-    title = jp.H2(classes="font-bold mb-2 text-center justify-center", text=title)  #58 (line in Coconut source)
-    box.add(title)  #59 (line in Coconut source)
-    return box  #60 (line in Coconut source)
+    click=None, text="", overflow=False):  #46 (line in Coconut source)
+    box_style = "background-color: #f9f9f9; border: 1px solid #ccc; shadow-lg; padding: 20px; w-{_coconut_format_0}; height: {_coconut_format_1}; rounded;".format(_coconut_format_0=(width), _coconut_format_1=(height))  #47 (line in Coconut source)
+    if overflow:  #48 (line in Coconut source)
+        box_style += " overflow-y: auto;"  #49 (line in Coconut source)
+    if click:  #50 (line in Coconut source)
+        box = jp.Div(classes="bg-{_coconut_format_0} hover:bg-{_coconut_format_1} {_coconut_format_2} shadow-lg p-4 m-4 rounded-md flex items-center justify-center".format(_coconut_format_0=(button_color), _coconut_format_1=(hover_color), _coconut_format_2=(text_color)), style="border:tpx: solid #ccc; shadow-lg; padding: 20px; w-{_coconut_format_0}; height: {_coconut_format_1}".format(_coconut_format_0=(width), _coconut_format_1=(height)), inner_html="<b>" + text, click=click)  #51 (line in Coconut source)
+    else:  #57 (line in Coconut source)
+        box = jp.Div(classes="border border-gray-300 shadow-lg p-4 rounded-md m-4 flex text-center items-center justify-center", style=box_style, text=text)  #58 (line in Coconut source)
+    title = jp.H2(classes="font-bold mb-2 text-center justify-center", text=title)  #60 (line in Coconut source)
+    box.add(title)  #61 (line in Coconut source)
+    return box  #62 (line in Coconut source)

@@ -1,10 +1,10 @@
 import justpy as jp
 
 background_color = "#f9f9f9"
-button_color = "purple-100"
-hover_color = "purple-200"
+button_color = "blue-500"
+hover_color = "blue-600"
 header_color = "#A0522D"
-text_color = ""
+text_color = "text-white"
 
 table_classes = "min-w-full bg-white border rounded shadow"
 table_style = "transform: scale(1.0)"
@@ -43,8 +43,10 @@ def make_col_flex_div(overflow=False):
     return jp.Div(classes=classes, style=f"background-color: {background_color}")
 
 
-def make_title_box(height: str, width: str, title: str, click=None, text=""):
-    box_style = f"background-color: #f9f9f9; border: 1px solid #ccc; shadow-lg; padding: 20px; w-{width}; height: {height}; overflow-y: auto rounded"
+def make_title_box(height: str, width: str, title: str, click=None, text="", overflow=False):
+    box_style = f"background-color: #f9f9f9; border: 1px solid #ccc; shadow-lg; padding: 20px; w-{width}; height: {height}; rounded;"
+    if overflow:
+        box_style += " overflow-y: auto;"
     if click:
         box = jp.Div(
             classes=f"bg-{button_color} hover:bg-{hover_color} {text_color} shadow-lg p-4 m-4 rounded-md flex items-center justify-center",
@@ -54,7 +56,7 @@ def make_title_box(height: str, width: str, title: str, click=None, text=""):
         )
     else:
         box = jp.Div(
-            classes="border border-gray-300 shadow-lg p-4 rounded-md m-4 flex items-center justify-center", style=box_style, text=text)
+            classes="border border-gray-300 shadow-lg p-4 rounded-md m-4 flex text-center items-center justify-center", style=box_style, text=text)
     title = jp.H2(classes="font-bold mb-2 text-center justify-center", text=title)
     box.add(title)
     return box
