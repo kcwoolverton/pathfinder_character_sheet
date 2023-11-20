@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x24d405ba
+# __coconut_hash__ = 0x6075e2b5
 
-# Compiled with Coconut version 3.0.3-post_dev30
+# Compiled with Coconut version 3.0.3-post_dev33
 
 # Coconut Header: -------------------------------------------------------------
 
 from __future__ import print_function, absolute_import, unicode_literals, division
 import sys as _coconut_sys
 import os as _coconut_os
-_coconut_header_info = ('3.0.3-post_dev30', '', False)
+_coconut_header_info = ('3.0.3-post_dev33', '', False)
 _coconut_cached__coconut__ = _coconut_sys.modules.get(str('__coconut__'))
 _coconut_file_dir = _coconut_os.path.dirname(_coconut_os.path.abspath(__file__))
 _coconut_pop_path = False
@@ -351,286 +351,295 @@ def make_roll_cell(rng, roll_modal, click, text=""):  #325 (line in Coconut sour
 
 def make_collapsible_button_cell(click, text="", spell=False):  #336 (line in Coconut source)
     classes = collapse_button_classes  #337 (line in Coconut source)
-    if spell:  #338 (line in Coconut source)
-        classes = spell_button_classes  #339 (line in Coconut source)
-    cell = jp.Td(classes=classes, style=collapse_button_style, click=click)  #340 (line in Coconut source)
-    cell.add(jp.Span(text="{_coconut_format_0}  ".format(_coconut_format_0=(text))))  #345 (line in Coconut source)
-    cell.add(jp.I(classes=caret_classes, style=caret_style))  #346 (line in Coconut source)
+    arrow = jp.I(classes=caret_classes, style=caret_style)  #338 (line in Coconut source)
+    if spell:  #339 (line in Coconut source)
+        classes = spell_button_classes  #340 (line in Coconut source)
+    cell = jp.Td(classes=classes, style=collapse_button_style, click=_coconut_partial(click, arrow_div=arrow))  #341 (line in Coconut source)
+    cell.add(jp.Span(text="{_coconut_format_0}  ".format(_coconut_format_0=(text))))  #346 (line in Coconut source)
+    cell.add(arrow)  #347 (line in Coconut source)
 
-    return cell  #348 (line in Coconut source)
+    return cell  #349 (line in Coconut source)
 
 
-def make_save_text(save_type  # type: str  #350 (line in Coconut source)
-    ):  #350 (line in Coconut source)
+def make_save_text(save_type  # type: str  #351 (line in Coconut source)
+    ):  #351 (line in Coconut source)
 # type: (...) -> str
-    save_dict = _coconut.dict((("fort", "Fortitude"), ("ref", "Reflex"), ("will", "Will")))  #351 (line in Coconut source)
-    return save_dict[save_type]  #352 (line in Coconut source)
+    save_dict = _coconut.dict((("fort", "Fortitude"), ("ref", "Reflex"), ("will", "Will")))  #352 (line in Coconut source)
+    return save_dict[save_type]  #353 (line in Coconut source)
 
 
-def make_saves_box(upper_container, char, rng, history_box):  #354 (line in Coconut source)
-    save_row = make_col_flex_div()  #355 (line in Coconut source)
+def make_saves_box(upper_container, char, rng, history_box):  #355 (line in Coconut source)
+    save_row = make_col_flex_div()  #356 (line in Coconut source)
 
-    table, table_body = make_table(["Saving Throws", "Total"])  #357 (line in Coconut source)
-    save_row.add(table)  #358 (line in Coconut source)
+    table, table_body = make_table(["Saving Throws", "Total"])  #358 (line in Coconut source)
+    save_row.add(table)  #359 (line in Coconut source)
 
-    for throw in SavingThrows:  #360 (line in Coconut source)
-        table_row = jp.Tr()  #361 (line in Coconut source)
-        table_body.add(table_row)  #362 (line in Coconut source)
-        roll_modal = make_roll_modal(upper_container, modifier=[char.saving_throws[throw.value],], rng=rng, history_box=history_box)  #363 (line in Coconut source)
-        button = make_roll_cell(rng, roll_modal, click=_coconut_partial(toggle_roll_modal, rng=rng, modifier=[char.saving_throws[throw.value],], roll_type=make_save_text(throw.name)), text=make_save_text(throw.name))  #364 (line in Coconut source)
-        table_row.add(button)  #369 (line in Coconut source)
-        total = make_cell_div(text=make_mod_text([char.saving_throws[throw.value],]))  #370 (line in Coconut source)
-        table_row.add(total)  #371 (line in Coconut source)
-    if char.conditional_st_modifiers:  #372 (line in Coconut source)
-        table_row = jp.Tr()  #373 (line in Coconut source)
-        table_body.add(table_row)  #374 (line in Coconut source)
-        conditional_modifier_row = make_cell_div(text="<br>".join(char.conditional_st_modifiers))  #375 (line in Coconut source)
-        table_row.add(conditional_modifier_row)  #376 (line in Coconut source)
-        table_row.add(make_button_div())  #377 (line in Coconut source)
-    return save_row  #378 (line in Coconut source)
-
-
-def make_lang_box(char):  #380 (line in Coconut source)
-    lang_row = make_col_flex_div()  #381 (line in Coconut source)
-
-    table, table_body = make_table(["Languages",])  #383 (line in Coconut source)
-    lang_row.add(table)  #384 (line in Coconut source)
-
-    for lang in char.languages:  #386 (line in Coconut source)
-        table_row = jp.Tr()  #387 (line in Coconut source)
-        table_body.add(table_row)  #388 (line in Coconut source)
-        if lang == "Xenophobic":  #389 (line in Coconut source)
-            lang = "Glorbon"  #390 (line in Coconut source)
-        language = make_cell_div(text=lang)  #391 (line in Coconut source)
-        table_row.add(language)  #392 (line in Coconut source)
-
-    return lang_row  #394 (line in Coconut source)
+    for throw in SavingThrows:  #361 (line in Coconut source)
+        table_row = jp.Tr()  #362 (line in Coconut source)
+        table_body.add(table_row)  #363 (line in Coconut source)
+        roll_modal = make_roll_modal(upper_container, modifier=[char.saving_throws[throw.value],], rng=rng, history_box=history_box)  #364 (line in Coconut source)
+        button = make_roll_cell(rng, roll_modal, click=_coconut_partial(toggle_roll_modal, rng=rng, modifier=[char.saving_throws[throw.value],], roll_type=make_save_text(throw.name)), text=make_save_text(throw.name))  #365 (line in Coconut source)
+        table_row.add(button)  #370 (line in Coconut source)
+        total = make_cell_div(text=make_mod_text([char.saving_throws[throw.value],]))  #371 (line in Coconut source)
+        table_row.add(total)  #372 (line in Coconut source)
+    if char.conditional_st_modifiers:  #373 (line in Coconut source)
+        table_row = jp.Tr()  #374 (line in Coconut source)
+        table_body.add(table_row)  #375 (line in Coconut source)
+        conditional_modifier_row = make_cell_div(text="<br>".join(char.conditional_st_modifiers))  #376 (line in Coconut source)
+        table_row.add(conditional_modifier_row)  #377 (line in Coconut source)
+        table_row.add(make_button_div())  #378 (line in Coconut source)
+    return save_row  #379 (line in Coconut source)
 
 
-@_coconut_tco  #396 (line in Coconut source)
-def make_spell_text(spell  # type: Spell  #396 (line in Coconut source)
-    ):  #396 (line in Coconut source)
+def make_lang_box(char):  #381 (line in Coconut source)
+    lang_row = make_col_flex_div()  #382 (line in Coconut source)
+
+    table, table_body = make_table(["Languages",])  #384 (line in Coconut source)
+    lang_row.add(table)  #385 (line in Coconut source)
+
+    for lang in char.languages:  #387 (line in Coconut source)
+        table_row = jp.Tr()  #388 (line in Coconut source)
+        table_body.add(table_row)  #389 (line in Coconut source)
+        if lang == "Xenophobic":  #390 (line in Coconut source)
+            lang = "Glorbon"  #391 (line in Coconut source)
+        language = make_cell_div(text=lang)  #392 (line in Coconut source)
+        table_row.add(language)  #393 (line in Coconut source)
+
+    return lang_row  #395 (line in Coconut source)
+
+
+@_coconut_tco  #397 (line in Coconut source)
+def make_spell_text(spell  # type: Spell  #397 (line in Coconut source)
+    ):  #397 (line in Coconut source)
 # type: (...) -> str
-    return _coconut_tail_call("<b>DC:</b> {_coconut_format_0} | <b>Save:</b> {_coconut_format_1} | <b>Casting Time:</b> {_coconut_format_2} | <b>Target:</b> {_coconut_format_3} | <b>Range:</b> {_coconut_format_4} | <b>Duration:</b> {_coconut_format_5}<br><br>{_coconut_format_6}".format, _coconut_format_0=(spell.dc), _coconut_format_1=(spell.save_info), _coconut_format_2=(spell.casting_time), _coconut_format_3=(spell.target), _coconut_format_4=(spell.spell_range), _coconut_format_5=(spell.duration), _coconut_format_6=(spell.effect))  #397 (line in Coconut source)
+    return _coconut_tail_call("<b>DC:</b> {_coconut_format_0} | <b>Save:</b> {_coconut_format_1} | <b>Casting Time:</b> {_coconut_format_2} | <b>Target:</b> {_coconut_format_3} | <b>Range:</b> {_coconut_format_4} | <b>Duration:</b> {_coconut_format_5}<br><br>{_coconut_format_6}".format, _coconut_format_0=(spell.dc), _coconut_format_1=(spell.save_info), _coconut_format_2=(spell.casting_time), _coconut_format_3=(spell.target), _coconut_format_4=(spell.spell_range), _coconut_format_5=(spell.duration), _coconut_format_6=(spell.effect))  #398 (line in Coconut source)
 
 
-def toggle_collapsible_content(self, msg):  #399 (line in Coconut source)
-    if 'hidden' in self.content.classes:  #400 (line in Coconut source)
-        self.content.remove_class('hidden')  #401 (line in Coconut source)
-    else:  #402 (line in Coconut source)
-        self.content.set_class('hidden')  #403 (line in Coconut source)
+def toggle_collapsible_content(self, msg, arrow_div):  #400 (line in Coconut source)
+    if 'hidden' in self.content.classes:  #401 (line in Coconut source)
+        self.content.remove_class('hidden')  #402 (line in Coconut source)
+        print(arrow_div.classes)  #403 (line in Coconut source)
+        arrow_div.remove_class('fa-angle-down')  #404 (line in Coconut source)
+        arrow_div.classes += " fa-angle-up"  #405 (line in Coconut source)
+        print(arrow_div.classes)  #406 (line in Coconut source)
+    else:  #407 (line in Coconut source)
+        self.content.set_class('hidden')  #408 (line in Coconut source)
+        print(arrow_div.classes)  #409 (line in Coconut source)
+        arrow_div.remove_class('fa-angle-up')  #410 (line in Coconut source)
+        arrow_div.classes += " fa-angle-down"  #411 (line in Coconut source)
+        print(arrow_div.classes)  #412 (line in Coconut source)
 
 
-def make_collapsible_comp(upper_container, button_name="", inner_text="", spell=False):  #405 (line in Coconut source)
-    content = jp.Div(inner_html=inner_text, classes='border p-4 hidden')  #406 (line in Coconut source)
-    button = make_collapsible_button_cell(click=toggle_collapsible_content, text=button_name, spell=spell)  #407 (line in Coconut source)
-    button.content = content  #408 (line in Coconut source)
-    upper_container.add(button)  #409 (line in Coconut source)
+def make_collapsible_comp(upper_container, button_name="", inner_text="", spell=False):  #414 (line in Coconut source)
+    content = jp.Div(inner_html=inner_text, classes='border p-4 hidden')  #415 (line in Coconut source)
+    button = make_collapsible_button_cell(click=toggle_collapsible_content, text=button_name, spell=spell)  #416 (line in Coconut source)
+    button.content = content  #417 (line in Coconut source)
+    upper_container.add(button)  #418 (line in Coconut source)
 
-    return content  #411 (line in Coconut source)
-
-
-def make_spells_box(reset_button, char):  #413 (line in Coconut source)
-    spells_row = make_col_flex_div()  #414 (line in Coconut source)
-    table, table_body = make_table(["Spell", "Casts", "Level"])  #415 (line in Coconut source)
-    reset_button.checkboxes = []  #416 (line in Coconut source)
-
-    spells_row.add(table)  #418 (line in Coconut source)
-    button = reset_button  #419 (line in Coconut source)
-    for spell in char.spells:  #420 (line in Coconut source)
-        table_row = jp.Tr()  #421 (line in Coconut source)
-        table_body.add(table_row)  #422 (line in Coconut source)
-        next_row = jp.Tr()  #423 (line in Coconut source)
-        table_body.add(next_row)  #424 (line in Coconut source)
-        spell_cell = make_collapsible_comp(table_row, spell.name, make_spell_text(spell), spell=True)  #425 (line in Coconut source)
-        next_row.add(spell_cell)  #426 (line in Coconut source)
-        num_checkboxes = spell.times_memorized  #427 (line in Coconut source)
-        if spell.level == "0":  #428 (line in Coconut source)
-            num_checkboxes = 0  #429 (line in Coconut source)
-        checkboxes, interim_button = make_checkbox_cell(reset_button, num_checkboxes=num_checkboxes)  #430 (line in Coconut source)
-        if interim_button:  #431 (line in Coconut source)
-            button = interim_button  #432 (line in Coconut source)
-        table_row.add(checkboxes)  #433 (line in Coconut source)
-        table_row.add(make_cell_div(text=spell.level))  #434 (line in Coconut source)
-
-    return spells_row, button  #436 (line in Coconut source)
+    return content  #420 (line in Coconut source)
 
 
-def make_spell_like_abilities_box(char):  #438 (line in Coconut source)
-    spell_like_abilities_row = make_col_flex_div()  #439 (line in Coconut source)
-    table, table_body = make_table(["Spell-like Abilities",])  #440 (line in Coconut source)
+def make_spells_box(reset_button, char):  #422 (line in Coconut source)
+    spells_row = make_col_flex_div()  #423 (line in Coconut source)
+    table, table_body = make_table(["Spell", "Casts", "Level"])  #424 (line in Coconut source)
+    reset_button.checkboxes = []  #425 (line in Coconut source)
 
-    spell_like_abilities_row.add(table)  #442 (line in Coconut source)
+    spells_row.add(table)  #427 (line in Coconut source)
+    button = reset_button  #428 (line in Coconut source)
+    for spell in char.spells:  #429 (line in Coconut source)
+        table_row = jp.Tr()  #430 (line in Coconut source)
+        table_body.add(table_row)  #431 (line in Coconut source)
+        next_row = jp.Tr()  #432 (line in Coconut source)
+        table_body.add(next_row)  #433 (line in Coconut source)
+        spell_cell = make_collapsible_comp(table_row, spell.name, make_spell_text(spell), spell=True)  #434 (line in Coconut source)
+        next_row.add(spell_cell)  #435 (line in Coconut source)
+        num_checkboxes = spell.times_memorized  #436 (line in Coconut source)
+        if spell.level == "0":  #437 (line in Coconut source)
+            num_checkboxes = 0  #438 (line in Coconut source)
+        checkboxes, interim_button = make_checkbox_cell(reset_button, num_checkboxes=num_checkboxes)  #439 (line in Coconut source)
+        if interim_button:  #440 (line in Coconut source)
+            button = interim_button  #441 (line in Coconut source)
+        table_row.add(checkboxes)  #442 (line in Coconut source)
+        table_row.add(make_cell_div(text=spell.level))  #443 (line in Coconut source)
 
-    table_row = jp.Tr()  #444 (line in Coconut source)
-    table_body.add(table_row)  #445 (line in Coconut source)
-
-    table_row.add(make_cell_div(text=char.spell_like_abilities))  #447 (line in Coconut source)
-
-    return spell_like_abilities_row  #449 (line in Coconut source)
-
-
-def make_skills_box(upper_container, char, rng, history_box):  #451 (line in Coconut source)
-    skills_row = make_col_flex_div()  #452 (line in Coconut source)
-
-    table, table_body = make_table(["Skill", "Modifier"])  #454 (line in Coconut source)
-    skills_row.add(table)  #455 (line in Coconut source)
-
-    for skill, modifier in char.skills.items():  #457 (line in Coconut source)
-        table_row = jp.Tr()  #458 (line in Coconut source)
-        table_body.add(table_row)  #459 (line in Coconut source)
-        roll_modal = make_roll_modal(upper_container, modifier=[modifier,], rng=rng, history_box=history_box)  #460 (line in Coconut source)
-        skill_name = make_roll_cell(rng, roll_modal, click=_coconut_partial(toggle_roll_modal, rng=rng, modifier=[modifier,], roll_type=skill), text=skill)  #461 (line in Coconut source)
-        table_row.add(skill_name)  #466 (line in Coconut source)
-        modifier_cell = make_cell_div(text=make_mod_text([modifier,]))  #467 (line in Coconut source)
-        table_row.add(modifier_cell)  #468 (line in Coconut source)
-
-    return skills_row  #470 (line in Coconut source)
+    return spells_row, button  #445 (line in Coconut source)
 
 
-def make_feats_box(char):  #472 (line in Coconut source)
-    feats_row = make_col_flex_div()  #473 (line in Coconut source)
-    table, table_body = make_table(["Feats",])  #474 (line in Coconut source)
+def make_spell_like_abilities_box(char):  #447 (line in Coconut source)
+    spell_like_abilities_row = make_col_flex_div()  #448 (line in Coconut source)
+    table, table_body = make_table(["Spell-like Abilities",])  #449 (line in Coconut source)
 
-    feats_row.add(table)  #476 (line in Coconut source)
+    spell_like_abilities_row.add(table)  #451 (line in Coconut source)
 
-    for feat in char.feats:  #478 (line in Coconut source)
-        table_row = jp.Tr()  #479 (line in Coconut source)
-        table_body.add(table_row)  #480 (line in Coconut source)
-        next_row = jp.Tr()  #481 (line in Coconut source)
-        table_body.add(next_row)  #482 (line in Coconut source)
-        feat_cell = make_collapsible_comp(table_row, feat.feat_name, feat.feat_benefit)  #483 (line in Coconut source)
-        next_row.add(feat_cell)  #484 (line in Coconut source)
+    table_row = jp.Tr()  #453 (line in Coconut source)
+    table_body.add(table_row)  #454 (line in Coconut source)
 
-    return feats_row  #486 (line in Coconut source)
+    table_row.add(make_cell_div(text=char.spell_like_abilities))  #456 (line in Coconut source)
+
+    return spell_like_abilities_row  #458 (line in Coconut source)
 
 
-def make_proficiencies_box(char):  #488 (line in Coconut source)
-    prof_row = make_col_flex_div()  #489 (line in Coconut source)
-    table, table_body = make_table(["Weapon Proficiencies",])  #490 (line in Coconut source)
+def make_skills_box(upper_container, char, rng, history_box):  #460 (line in Coconut source)
+    skills_row = make_col_flex_div()  #461 (line in Coconut source)
 
-    prof_row.add(table)  #492 (line in Coconut source)
+    table, table_body = make_table(["Skill", "Modifier"])  #463 (line in Coconut source)
+    skills_row.add(table)  #464 (line in Coconut source)
 
-    table_row = jp.Tr()  #494 (line in Coconut source)
-    table_body.add(table_row)  #495 (line in Coconut source)
-    prof_cell = make_cell_div(text=char.weapon_proficiencies)  #496 (line in Coconut source)
-    table_row.add(prof_cell)  #497 (line in Coconut source)
+    for skill, modifier in char.skills.items():  #466 (line in Coconut source)
+        table_row = jp.Tr()  #467 (line in Coconut source)
+        table_body.add(table_row)  #468 (line in Coconut source)
+        roll_modal = make_roll_modal(upper_container, modifier=[modifier,], rng=rng, history_box=history_box)  #469 (line in Coconut source)
+        skill_name = make_roll_cell(rng, roll_modal, click=_coconut_partial(toggle_roll_modal, rng=rng, modifier=[modifier,], roll_type=skill), text=skill)  #470 (line in Coconut source)
+        table_row.add(skill_name)  #475 (line in Coconut source)
+        modifier_cell = make_cell_div(text=make_mod_text([modifier,]))  #476 (line in Coconut source)
+        table_row.add(modifier_cell)  #477 (line in Coconut source)
 
-    return prof_row  #499 (line in Coconut source)
-
-
-def make_cmb_and_cmd_box(upper_container, char, rng, history_box):  #501 (line in Coconut source)
-    cm_row = make_col_flex_div(overflow=True)  #502 (line in Coconut source)
-    headers = ["",]  #503 (line in Coconut source)
-    cmb = ["CMB",]  #504 (line in Coconut source)
-    cmd = ["CMD",]  #505 (line in Coconut source)
-
-    for cmb_name, value in char.cmb.items():  #507 (line in Coconut source)
-        table_header = cmb_name.split("_")[0]  #508 (line in Coconut source)
-        cmd_name = table_header + "_defense"  #509 (line in Coconut source)
-        headers.append(table_header)  #510 (line in Coconut source)
-        cmb.append(value)  #511 (line in Coconut source)
-        cmd.append(char.cmd[cmd_name])  #512 (line in Coconut source)
-
-    table, table_body = make_table(headers)  #514 (line in Coconut source)
-    cm_row.add(table)  #515 (line in Coconut source)
-    cmb_row = jp.Tr()  #516 (line in Coconut source)
-    cmd_row = jp.Tr()  #517 (line in Coconut source)
-    table_body.add(cmb_row, cmd_row)  #518 (line in Coconut source)
-
-    for i in range(len(headers)):  #520 (line in Coconut source)
-        if i != 0:  #521 (line in Coconut source)
-            cmd_cell = make_cell_div(text=cmd[i])  #522 (line in Coconut source)
-            cmd_row.add(cmd_cell)  #523 (line in Coconut source)
-            cmb_roll_modal = make_roll_modal(upper_container, modifier=[int(cmb[i]),], rng=rng, history_box=history_box)  #524 (line in Coconut source)
-            cmb_cell = make_roll_cell(rng, cmb_roll_modal, click=_coconut_partial(toggle_roll_modal, rng=rng, modifier=[int(cmb[i]),], roll_type="CMB"), text=make_mod_text([cmb[i],]))  #525 (line in Coconut source)
-            cmb_row.add(cmb_cell)  #530 (line in Coconut source)
-        else:  #531 (line in Coconut source)
-            cmd_cell = make_cell_div(text="<b>{_coconut_format_0}</b>".format(_coconut_format_0=(cmd[i])))  #532 (line in Coconut source)
-            cmd_row.add(cmd_cell)  #533 (line in Coconut source)
-            cmb_cell = make_cell_div(text="<b>{_coconut_format_0}</b>".format(_coconut_format_0=(cmb[i])))  #534 (line in Coconut source)
-            cmb_row.add(cmb_cell)  #535 (line in Coconut source)
-
-    return cm_row  #537 (line in Coconut source)
+    return skills_row  #479 (line in Coconut source)
 
 
-def make_large_row(upper_container, reset_button, char, rng, history_box):  #539 (line in Coconut source)
-    main_row = jp.Div(classes=large_row_classes, style=large_row_style)  #540 (line in Coconut source)
+def make_feats_box(char):  #481 (line in Coconut source)
+    feats_row = make_col_flex_div()  #482 (line in Coconut source)
+    table, table_body = make_table(["Feats",])  #483 (line in Coconut source)
 
-    cm_box = make_cmb_and_cmd_box(upper_container, char, rng, history_box)  #542 (line in Coconut source)
+    feats_row.add(table)  #485 (line in Coconut source)
 
-    special_qualities_box = make_special_qualities_box(char)  #544 (line in Coconut source)
+    for feat in char.feats:  #487 (line in Coconut source)
+        table_row = jp.Tr()  #488 (line in Coconut source)
+        table_body.add(table_row)  #489 (line in Coconut source)
+        next_row = jp.Tr()  #490 (line in Coconut source)
+        table_body.add(next_row)  #491 (line in Coconut source)
+        feat_cell = make_collapsible_comp(table_row, feat.feat_name, feat.feat_benefit)  #492 (line in Coconut source)
+        next_row.add(feat_cell)  #493 (line in Coconut source)
 
-    left_col = make_one_third_col_div()  #546 (line in Coconut source)
-    abilities_box = make_abilities_box(upper_container, char, rng, history_box)  #547 (line in Coconut source)
-    weapons_box = make_weapons_box(upper_container, char, rng, history_box)  #548 (line in Coconut source)
-    left_col.add(abilities_box, make_base_attack_box(upper_container, char, rng, history_box), weapons_box)  #549 (line in Coconut source)
-    if char.ranged_weapons:  #550 (line in Coconut source)
-        left_col.add(make_ranged_weapons_box(upper_container, char, rng, history_box))  #551 (line in Coconut source)
-    if char.spells:  #552 (line in Coconut source)
-        left_col.add(cm_box)  #553 (line in Coconut source)
-    if char.special_attacks:  #554 (line in Coconut source)
-        left_col.add(make_special_attacks_box(char))  #555 (line in Coconut source)
-    if char.special_abilities and char.spells:  #556 (line in Coconut source)
-        left_col.add(special_qualities_box)  #557 (line in Coconut source)
-    left_col.add(make_feats_box(char))  #558 (line in Coconut source)
+    return feats_row  #495 (line in Coconut source)
+
+
+def make_proficiencies_box(char):  #497 (line in Coconut source)
+    prof_row = make_col_flex_div()  #498 (line in Coconut source)
+    table, table_body = make_table(["Weapon Proficiencies",])  #499 (line in Coconut source)
+
+    prof_row.add(table)  #501 (line in Coconut source)
+
+    table_row = jp.Tr()  #503 (line in Coconut source)
+    table_body.add(table_row)  #504 (line in Coconut source)
+    prof_cell = make_cell_div(text=char.weapon_proficiencies)  #505 (line in Coconut source)
+    table_row.add(prof_cell)  #506 (line in Coconut source)
+
+    return prof_row  #508 (line in Coconut source)
+
+
+def make_cmb_and_cmd_box(upper_container, char, rng, history_box):  #510 (line in Coconut source)
+    cm_row = make_col_flex_div(overflow=True)  #511 (line in Coconut source)
+    headers = ["",]  #512 (line in Coconut source)
+    cmb = ["CMB",]  #513 (line in Coconut source)
+    cmd = ["CMD",]  #514 (line in Coconut source)
+
+    for cmb_name, value in char.cmb.items():  #516 (line in Coconut source)
+        table_header = cmb_name.split("_")[0]  #517 (line in Coconut source)
+        cmd_name = table_header + "_defense"  #518 (line in Coconut source)
+        headers.append(table_header)  #519 (line in Coconut source)
+        cmb.append(value)  #520 (line in Coconut source)
+        cmd.append(char.cmd[cmd_name])  #521 (line in Coconut source)
+
+    table, table_body = make_table(headers)  #523 (line in Coconut source)
+    cm_row.add(table)  #524 (line in Coconut source)
+    cmb_row = jp.Tr()  #525 (line in Coconut source)
+    cmd_row = jp.Tr()  #526 (line in Coconut source)
+    table_body.add(cmb_row, cmd_row)  #527 (line in Coconut source)
+
+    for i in range(len(headers)):  #529 (line in Coconut source)
+        if i != 0:  #530 (line in Coconut source)
+            cmd_cell = make_cell_div(text=cmd[i])  #531 (line in Coconut source)
+            cmd_row.add(cmd_cell)  #532 (line in Coconut source)
+            cmb_roll_modal = make_roll_modal(upper_container, modifier=[int(cmb[i]),], rng=rng, history_box=history_box)  #533 (line in Coconut source)
+            cmb_cell = make_roll_cell(rng, cmb_roll_modal, click=_coconut_partial(toggle_roll_modal, rng=rng, modifier=[int(cmb[i]),], roll_type="CMB"), text=make_mod_text([cmb[i],]))  #534 (line in Coconut source)
+            cmb_row.add(cmb_cell)  #539 (line in Coconut source)
+        else:  #540 (line in Coconut source)
+            cmd_cell = make_cell_div(text="<b>{_coconut_format_0}</b>".format(_coconut_format_0=(cmd[i])))  #541 (line in Coconut source)
+            cmd_row.add(cmd_cell)  #542 (line in Coconut source)
+            cmb_cell = make_cell_div(text="<b>{_coconut_format_0}</b>".format(_coconut_format_0=(cmb[i])))  #543 (line in Coconut source)
+            cmb_row.add(cmb_cell)  #544 (line in Coconut source)
+
+    return cm_row  #546 (line in Coconut source)
+
+
+def make_large_row(upper_container, reset_button, char, rng, history_box):  #548 (line in Coconut source)
+    main_row = jp.Div(classes=large_row_classes, style=large_row_style)  #549 (line in Coconut source)
+
+    cm_box = make_cmb_and_cmd_box(upper_container, char, rng, history_box)  #551 (line in Coconut source)
+
+    special_qualities_box = make_special_qualities_box(char)  #553 (line in Coconut source)
+
+    left_col = make_one_third_col_div()  #555 (line in Coconut source)
+    abilities_box = make_abilities_box(upper_container, char, rng, history_box)  #556 (line in Coconut source)
+    weapons_box = make_weapons_box(upper_container, char, rng, history_box)  #557 (line in Coconut source)
+    left_col.add(abilities_box, make_base_attack_box(upper_container, char, rng, history_box), weapons_box)  #558 (line in Coconut source)
+    if char.ranged_weapons:  #559 (line in Coconut source)
+        left_col.add(make_ranged_weapons_box(upper_container, char, rng, history_box))  #560 (line in Coconut source)
+    if char.spells:  #561 (line in Coconut source)
+        left_col.add(cm_box)  #562 (line in Coconut source)
+    if char.special_attacks:  #563 (line in Coconut source)
+        left_col.add(make_special_attacks_box(char))  #564 (line in Coconut source)
+    if char.special_abilities and char.spells:  #565 (line in Coconut source)
+        left_col.add(special_qualities_box)  #566 (line in Coconut source)
+    left_col.add(make_feats_box(char))  #567 (line in Coconut source)
 
 # saves, langs, proficiencies, spells
-    middle_col = make_one_third_col_div()  #561 (line in Coconut source)
-    saves_box = make_saves_box(upper_container, char, rng, history_box)  #562 (line in Coconut source)
-    spell_like_abilities_box = make_spell_like_abilities_box(char)  #563 (line in Coconut source)
-    spells_box, button = make_spells_box(reset_button, char)  #564 (line in Coconut source)
-    middle_col.add(saves_box)  #565 (line in Coconut source)
+    middle_col = make_one_third_col_div()  #570 (line in Coconut source)
+    saves_box = make_saves_box(upper_container, char, rng, history_box)  #571 (line in Coconut source)
+    spell_like_abilities_box = make_spell_like_abilities_box(char)  #572 (line in Coconut source)
+    spells_box, button = make_spells_box(reset_button, char)  #573 (line in Coconut source)
+    middle_col.add(saves_box)  #574 (line in Coconut source)
 
-    if not char.spells:  #567 (line in Coconut source)
-        middle_col.add(cm_box)  #568 (line in Coconut source)
+    if not char.spells:  #576 (line in Coconut source)
+        middle_col.add(cm_box)  #577 (line in Coconut source)
 
-    if char.spell_like_abilities:  #570 (line in Coconut source)
-        middle_col.add(spell_like_abilities_box)  #571 (line in Coconut source)
+    if char.spell_like_abilities:  #579 (line in Coconut source)
+        middle_col.add(spell_like_abilities_box)  #580 (line in Coconut source)
 
-    if char.spells:  #573 (line in Coconut source)
-        middle_col.add(spells_box)  #574 (line in Coconut source)
+    if char.spells:  #582 (line in Coconut source)
+        middle_col.add(spells_box)  #583 (line in Coconut source)
 
-    if not char.spells and char.special_abilities:  #576 (line in Coconut source)
-        middle_col.add(special_qualities_box)  #577 (line in Coconut source)
+    if not char.spells and char.special_abilities:  #585 (line in Coconut source)
+        middle_col.add(special_qualities_box)  #586 (line in Coconut source)
 
-    right_col = make_one_third_col_div()  #579 (line in Coconut source)
-    right_col.add(make_skills_box(upper_container, char, rng, history_box), make_lang_box(char), make_proficiencies_box(char))  #580 (line in Coconut source)
+    right_col = make_one_third_col_div()  #588 (line in Coconut source)
+    right_col.add(make_skills_box(upper_container, char, rng, history_box), make_lang_box(char), make_proficiencies_box(char))  #589 (line in Coconut source)
 
-    main_row.add(left_col, middle_col, right_col)  #582 (line in Coconut source)
-    return main_row, button  #583 (line in Coconut source)
-
-
-def toggle_roll_modal(self, msg, rng, die=20, num_dice=1, modifier=[0,], roll_type=""):  #585 (line in Coconut source)
-    if not self.roll_modal.show:  #586 (line in Coconut source)
-        rolls = roll_dice(rng, die_type=int(die), num_dice=int(num_dice), num_rolls=len(modifier))  #587 (line in Coconut source)
-        self.roll_modal.content.inner_html = make_roll_result_text(rolls, modifier)  #588 (line in Coconut source)
-        print(self.roll_modal.history_box.inner_html)  #589 (line in Coconut source)
-        current_history = self.roll_modal.history_box.inner_html.split('<br>')  #590 (line in Coconut source)
-        for i in range(len(rolls)):  #591 (line in Coconut source)
-            current_history.append("{_coconut_format_0}: {_coconut_format_1} + {_coconut_format_2}".format(_coconut_format_0=(roll_type), _coconut_format_1=(rolls[i]), _coconut_format_2=(modifier[i])))  #592 (line in Coconut source)
-        self.roll_modal.history_box.inner_html = '<br>'.join(current_history).removeprefix("<br>")  #593 (line in Coconut source)
-        print(self.roll_modal.history_box.inner_html)  #594 (line in Coconut source)
-    self.roll_modal.show = not self.roll_modal.show  #595 (line in Coconut source)
+    main_row.add(left_col, middle_col, right_col)  #591 (line in Coconut source)
+    return main_row, button  #592 (line in Coconut source)
 
 
-def make_roll_modal(upper_container, rng, modifier=[0,], die=20, num_dice=1, history_box=None):  #597 (line in Coconut source)
-    modal_backdrop = jp.Div(classes="fixed w-full h-full top-0 left-0 flex items-center justify-center bg-black bg-opacity-50", show=False)  #598 (line in Coconut source)
-    upper_container.add(modal_backdrop)  #600 (line in Coconut source)
+def toggle_roll_modal(self, msg, rng, die=20, num_dice=1, modifier=[0,], roll_type=""):  #594 (line in Coconut source)
+    if not self.roll_modal.show:  #595 (line in Coconut source)
+        rolls = roll_dice(rng, die_type=int(die), num_dice=int(num_dice), num_rolls=len(modifier))  #596 (line in Coconut source)
+        self.roll_modal.content.inner_html = make_roll_result_text(rolls, modifier)  #597 (line in Coconut source)
+        print(self.roll_modal.history_box.inner_html)  #598 (line in Coconut source)
+        current_history = self.roll_modal.history_box.inner_html.split('<br>')  #599 (line in Coconut source)
+        for i in range(len(rolls)):  #600 (line in Coconut source)
+            current_history.append("{_coconut_format_0}: {_coconut_format_1} + {_coconut_format_2}".format(_coconut_format_0=(roll_type), _coconut_format_1=(rolls[i]), _coconut_format_2=(modifier[i])))  #601 (line in Coconut source)
+        self.roll_modal.history_box.inner_html = '<br>'.join(current_history).removeprefix("<br>")  #602 (line in Coconut source)
+        print(self.roll_modal.history_box.inner_html)  #603 (line in Coconut source)
+    self.roll_modal.show = not self.roll_modal.show  #604 (line in Coconut source)
 
-    modal_content = jp.Div(classes="bg-white rounded shadow-lg w-1/3 p-8 m-4 relative")  #602 (line in Coconut source)
-    modal_backdrop.add(modal_content)  #603 (line in Coconut source)
-    modal_title = jp.H1(text="Roll", classes="text-xl font-bold mb-4")  #604 (line in Coconut source)
-    modal_content.add(modal_title)  #605 (line in Coconut source)
-    rolls = roll_dice(rng, die_type=int(die), num_dice=int(num_dice), num_rolls=len(modifier))  #606 (line in Coconut source)
-    modal_text = jp.P(text=make_roll_result_text(rolls, modifier), classes="mb-4")  #607 (line in Coconut source)
-    modal_content.add(modal_text)  #608 (line in Coconut source)
-    modal_backdrop.content = modal_text  #609 (line in Coconut source)
-    modal_backdrop.history_box = history_box  #610 (line in Coconut source)
+
+def make_roll_modal(upper_container, rng, modifier=[0,], die=20, num_dice=1, history_box=None):  #606 (line in Coconut source)
+    modal_backdrop = jp.Div(classes="fixed w-full h-full top-0 left-0 flex items-center justify-center bg-black bg-opacity-50", show=False)  #607 (line in Coconut source)
+    upper_container.add(modal_backdrop)  #609 (line in Coconut source)
+
+    modal_content = jp.Div(classes="bg-white rounded shadow-lg w-1/3 p-8 m-4 relative")  #611 (line in Coconut source)
+    modal_backdrop.add(modal_content)  #612 (line in Coconut source)
+    modal_title = jp.H1(text="Roll", classes="text-xl font-bold mb-4")  #613 (line in Coconut source)
+    modal_content.add(modal_title)  #614 (line in Coconut source)
+    rolls = roll_dice(rng, die_type=int(die), num_dice=int(num_dice), num_rolls=len(modifier))  #615 (line in Coconut source)
+    modal_text = jp.P(text=make_roll_result_text(rolls, modifier), classes="mb-4")  #616 (line in Coconut source)
+    modal_content.add(modal_text)  #617 (line in Coconut source)
+    modal_backdrop.content = modal_text  #618 (line in Coconut source)
+    modal_backdrop.history_box = history_box  #619 (line in Coconut source)
 
 # Close button inside the modal
-    close_button = jp.Button(text="Close", classes="bg-red-500 text-white px-4 py-2", click=_coconut_partial(toggle_roll_modal, rng=rng, modifier=[modifier,]))  #613 (line in Coconut source)
-    close_button.roll_modal = modal_backdrop  #617 (line in Coconut source)
-    modal_content.add(close_button)  #618 (line in Coconut source)
+    close_button = jp.Button(text="Close", classes="bg-red-500 text-white px-4 py-2", click=_coconut_partial(toggle_roll_modal, rng=rng, modifier=[modifier,]))  #622 (line in Coconut source)
+    close_button.roll_modal = modal_backdrop  #626 (line in Coconut source)
+    modal_content.add(close_button)  #627 (line in Coconut source)
 
-    return modal_backdrop  #620 (line in Coconut source)
+    return modal_backdrop  #629 (line in Coconut source)

@@ -335,15 +335,16 @@ def make_roll_cell(rng, roll_modal, click, text=""):
 
 def make_collapsible_button_cell(click, text="", spell=False):
     classes = collapse_button_classes
+    arrow = jp.I(classes=caret_classes, style=caret_style)
     if spell:
         classes = spell_button_classes
     cell = jp.Td(
         classes=classes,
         style=collapse_button_style,
-        click=click,
+        click=click$(arrow_div=arrow),
     )
     cell.add(jp.Span(text=f"{text}  "))
-    cell.add(jp.I(classes=caret_classes, style=caret_style))
+    cell.add(arrow)
 
     return cell
 
@@ -396,11 +397,19 @@ def make_lang_box(char):
 def make_spell_text(spell: Spell) -> str:
     return f"<b>DC:</b> {spell.dc} | <b>Save:</b> {spell.save_info} | <b>Casting Time:</b> {spell.casting_time} | <b>Target:</b> {spell.target} | <b>Range:</b> {spell.spell_range} | <b>Duration:</b> {spell.duration}<br><br>{spell.effect}"
 
-def toggle_collapsible_content(self, msg):
+def toggle_collapsible_content(self, msg, arrow_div):
     if 'hidden' in self.content.classes:
         self.content.remove_class('hidden')
+        print(arrow_div.classes)
+        arrow_div.remove_class('fa-angle-down')
+        arrow_div.classes += " fa-angle-up"
+        print(arrow_div.classes)
     else:
         self.content.set_class('hidden')
+        print(arrow_div.classes)
+        arrow_div.remove_class('fa-angle-up')
+        arrow_div.classes += " fa-angle-down"
+        print(arrow_div.classes)
 
 def make_collapsible_comp(upper_container, button_name="", inner_text="", spell=False):
     content = jp.Div(inner_html=inner_text, classes='border p-4 hidden')
